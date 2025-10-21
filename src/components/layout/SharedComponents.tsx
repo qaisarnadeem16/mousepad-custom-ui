@@ -216,10 +216,10 @@ export const ViewerContainer = styled.div`
 `;
 
 export const ZoomInIcon = styled(Icon)<{ $isMobile?: boolean }>`
-	position: absolute;
+	// position: absolute;
 	left: 20px;
-	width: 32px;
-	height: 32px;
+	width: 24px;
+	height: 24px;
 	z-index: 3;
 	${(props) =>
 		props.$isMobile
@@ -233,10 +233,10 @@ export const ZoomInIcon = styled(Icon)<{ $isMobile?: boolean }>`
 `;
 
 export const ZoomOutIcon = styled(Icon)<{ $isMobile?: boolean }>`
-	position: absolute;
+	// position: absolute;
 	left: 20px;
-	width: 32px;
-	height: 32px;
+	width: 24px;
+	height: 24px;
 	z-index: 3;
 	${(props) =>
 		props.$isMobile
@@ -250,10 +250,10 @@ export const ZoomOutIcon = styled(Icon)<{ $isMobile?: boolean }>`
 `;
 
 export const ResetIcon = styled(Icon)<{ $isMobile?: boolean }>`
-	position: absolute;
-	left: 20px;
-	width: 27px;
-	height: 27px;
+	// position: absolute;
+	// left: 20px;
+	// width: 27px;
+	// height: 27px;
 	z-index: 3;
 	${(props) =>
 		props.$isMobile
@@ -268,10 +268,10 @@ export const ResetIcon = styled(Icon)<{ $isMobile?: boolean }>`
 `;
 
 export const UndoIcon = styled(Icon)<{ $isMobile?: boolean }>`
-	position: absolute;
-	left: 20px;
-	width: 27px;
-	height: 27px;
+	// position: absolute;
+	// left: 20px;
+	width: 17px;
+	height: 17px;
 	z-index: 3;
 	${(props) =>
 		props.$isMobile
@@ -286,10 +286,10 @@ export const UndoIcon = styled(Icon)<{ $isMobile?: boolean }>`
 `;
 
 export const RedoIcon = styled(Icon)<{ $isMobile?: boolean }>`
-	position: absolute;
-	left: 20px;
-	width: 27px;
-	height: 27px;
+	// position: absolute;
+	// left: 20px;
+	width: 17px;
+	height: 17px;
 	z-index: 3;
 	${(props) =>
 		props.$isMobile
@@ -363,7 +363,7 @@ export const BottomRightIcons = styled.div`
 `;
 
 export const ArIcon = styled(ArSolid)`
-	position: absolute;
+	// position: absolute;
 	right: 0px;
 	top: 20px;
 	width: 32px;

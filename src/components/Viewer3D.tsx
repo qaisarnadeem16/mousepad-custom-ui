@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useZakeke, ZakekeViewer } from '@zakeke/zakeke-configurator-react';
-import { Button } from 'components/Atomic';
+import { Button, Icon } from 'components/Atomic';
 import ArDeviceSelectionDialog from 'components/dialogs/ArDeviceSelectionDialog';
 import RecapPanel from 'components/widgets/RecapPanel';
 import {
@@ -20,14 +20,16 @@ import { ReactComponent as CollapseSolid } from '../assets/icons/compress-arrows
 import { ReactComponent as DesktopSolid } from '../assets/icons/desktop-solid.svg';
 import { ReactComponent as ExplodeSolid } from '../assets/icons/expand-arrows-alt-solid.svg';
 import { ReactComponent as ExpandSolid } from '../assets/icons/expand-solid.svg';
-
+import { ReactComponent as ShareSolid } from '../assets/icons/share.svg';
 import AiDialog from 'components/dialogs/AIDialog';
 import TryOnsButton from 'components/widgets/TryOnsButtons';
-import { ReactComponent as RedoSolid } from '../assets/icons/redo-solid.svg';
+import { ReactComponent as RedoSolid } from '../assets/icons/redo.svg';
 import { ReactComponent as ResetSolid } from '../assets/icons/reset-alt-solid.svg';
-import { ReactComponent as SearchMinusSolid } from '../assets/icons/search-minus-solid.svg';
-import { ReactComponent as SearchPlusSolid } from '../assets/icons/search-plus-solid.svg';
-import { ReactComponent as UndoSolid } from '../assets/icons/undo-solid.svg';
+import { ReactComponent as SearchMinusSolid } from '../assets/icons/zoom-minus.svg';
+import { ReactComponent as SearchPlusSolid } from '../assets/icons/zoom-plus.svg';
+import { ReactComponent as UndoSolid } from '../assets/icons/undo.svg';
+import { ReactComponent as SaveSolid } from '../assets/icons/save-icon.svg';
+import { ReactComponent as RotationIcon } from '../assets/icons/3d-rotate.svg';
 import { Dialog, useDialogManager } from './dialogs/Dialogs';
 import {
 	AiIcon,
@@ -49,6 +51,8 @@ import {
 	ZoomOutIcon
 } from './layout/SharedComponents';
 import Notifications from './widgets/Notifications';
+import ShareDialog from './dialogs/ShareDialog';
+import SaveDesignsDraftDialog from './dialogs/SaveDesignsDraftDialog';
 
 // Styled component for the container of the 3D view.
 const Viewer3D = () => {
@@ -72,8 +76,10 @@ const Viewer3D = () => {
 		hasVTryOnEnabled,
 		getTryOnSettings,
 		isInfoPointContentVisible,
-		isAIEnabled
+		isAIEnabled,
+		setCameraByName,
 	} = useZakeke();
+	const {isViewerMode}=useStore()
 
 	const [isRecapPanelOpened, setRecapPanelOpened] = useState(
 		sellerSettings?.isCompositionRecapVisibleFromStart ?? false
@@ -196,10 +202,95 @@ const Viewer3D = () => {
 		else if (actualRedoStep.type === 'option') return redo();
 	};
 
+	const handleShareClick = async () => {
+			setCameraByName('buy_screenshot_camera', false, false);
+			showDialog('share', <ShareDialog />);
+	};
+
+	const handleSaveClick = async () => {
+		showDialog('save', <SaveDesignsDraftDialog onCloseClick={() => closeDialog('save')} />);
+	};
+
+
 	return (
 		<ViewerContainer ref={ref}>
 			{!isSceneLoading && <ZakekeViewer bgColor='#00000000' />}
+              {!isInfoPointContentVisible && (
+            <div className="">
+	          <div className="absolute top-4  flex items-center w-full z-10 justify-center">
+                <div 
+				 className="flex relative items-center gap-7 
+    bg-[#070b3a]/90 text-white px-6 py-4 mx-auto md:w-auto justify-center w-full md:py-2 md:rounded-full 
+    shadow-[0_0_40px_10px_rgba(102,51,255,0.4)] border border-indigo-700/40
+    backdrop-blur-md"
+				>
+		  {sellerSettings?.canUndoRedo && (
+			<div className="flex cursor-pointer items-center gap-2">
+			  <UndoIcon $isMobile={isMobile} key={'undo'} hoverable onClick={handleUndoClick}>
+				<UndoSolid />
+			  </UndoIcon>
+			  <p className='text-base md:block hidden'>Undo</p>
+			</div>
+		)}
+		{sellerSettings?.canUndoRedo && (
+			<div className="flex cursor-pointer items-center gap-2">
+              <RedoIcon $isMobile={isMobile} key={'redo'} hoverable onClick={handleRedoClick}>
+				<RedoSolid />
+			  </RedoIcon>
+			  <p className='text-base md:block hidden'>Redo</p>
+			</div>
+		)}
+			{/* {!isDraftEditor &&
+				!isEditorMode &&
+				!isViewerMode &&
+				sellerSettings &&
+				sellerSettings.canSaveDraftComposition && ( */}
+				<div className='flex gap-2 items-center cursor-pointer' key={'save'} onClick={() => handleSaveClick()}>
+				    <SaveSolid />
+				    <span className='text-base md:block hidden'>Save</span>
+				</div>
+			{/* )} */}
+			{/* {sellerSettings && */}
+			    {/* sellerSettings.shareType !== 0 &&
+				!isEditorMode &&
+				!isDraftEditor &&
+				!isEditorMode && ( */}
+				<div className="flex gap-2 items-center cursor-pointer" key={'share'} onClick={() => handleShareClick()}>
+				    <ShareSolid />
+					<p className='text-base md:block hidden'>Share</p>
+				</div>
+			{/* )} */}
+        <div className="flex items-center cursor-pointer gap-2 hover:text-indigo-400 transition">
+          <RotationIcon />
+		  <span className="sm:inline text-sm hidden">Rotate</span>
+        </div>
 
+		<div className="flex cursor-pointer items-center gap-2">
+          <ZoomInIcon $isMobile={isMobile} key={'zoomin'} hoverable onClick={zoomIn}>
+			<SearchPlusSolid />
+		 </ZoomInIcon>
+		</div>
+       
+        <div className="flex cursor-pointer items-center gap-2">
+		 <ZoomOutIcon $isMobile={isMobile} key={'zoomout'} hoverable onClick={zoomOut}>
+			 <SearchMinusSolid />
+		 </ZoomOutIcon>
+		</div>
+		{/* {sellerSettings?.canUndoRedo && (
+			<ResetIcon $isMobile={isMobile} key={'reset'} hoverable onClick={reset}>
+		      <ResetSolid />
+		    </ResetIcon>
+		)} */}
+        {/* AR View Button */}
+        {/* {isSceneArEnabled() && !isDraftEditor && !isEditorMode && ( */}
+			<div onClick={() => handleArClick()} >
+			  <h1 className='bg-[#6633FF] md:block hidden text-sm text-white py-2 px-4 hover:cursor-pointer hover:bg-blue-600 rounded-full'>AR View</h1>
+			</div>
+		{/* )} */}
+      </div>
+    </div>
+ </div>
+)}
 			{/* {!isInfoPointContentVisible && (
 				<div className=''>
 					<ZoomInIcon $isMobile={isMobile} key={'zoomin'} hoverable onClick={zoomIn}>
