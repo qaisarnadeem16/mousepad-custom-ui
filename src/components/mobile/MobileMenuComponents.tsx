@@ -22,7 +22,7 @@ export const MobileItemContainer = styled.div<{ selected?: boolean }>`
 	flex-direction: column;
 	border-right: 2px #fff solid;
 	position: relative;
-	${(props) => props.selected && `background-color: #f7f7f7;`}
+	background-color: #090B38;
 `;
 
 // Styled component for the image of each menu item
@@ -67,6 +67,7 @@ export const MenuItemLabel = styled.span`
 	position: absolute;
 	bottom: 20px;
 	left: 0;
+	color:white;
 	right: 0;
 	text-align: center;
 	overflow: hidden;
@@ -138,7 +139,7 @@ const MenuItemsWrapper = styled.div`
 	min-height: 141px;
 	width: 100%;
 	overflow-x: auto;
-	background-color: #ffffff;
+	background-color: #090B38;
 	border-top: 1px #ffffff solid;
 	-ms-overflow-style: none; /* IE and Edge */
 	scrollbar-width: none; /* Firefox */

@@ -465,9 +465,10 @@ export type PropChangeHandler = (
 ) => void;
 
 export const PriceContainer = styled.div<{ $isMobile?: boolean }>`
-	font-size: 20px;
+	font-size: 26px;
 	font-weight: 600;
-	color: #313c46;
+	color: white;
+	font-family:Saira;
 	margin-right: 20px;
 	${(props) =>
 		props.$isMobile &&

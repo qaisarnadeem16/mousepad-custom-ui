@@ -50,7 +50,7 @@ function LayoutDesktop() {
 				<DesktopRightSidebar />
 				<Viewer3D />
 			</Top>
-			{/* <FooterDesktop /> */}
+			<FooterDesktop />
 		</LayoutDesktopContainer>
 	);
 }

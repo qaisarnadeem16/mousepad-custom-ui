@@ -28,18 +28,21 @@ import { useEffect, useRef, useState } from 'react';
 export const FooterContainer = styled.div`
 	display: flex;
 	flex-direction: row;
-	height: 70px;
-	background-color: white;
+	height: 120px;
+	border-top:2px solid #6633FF;
+	width:497px;
+	background-color: #090B38;
 	padding-top: 10px;
+	border-bottom-right-radius: 5px;
 `;
 
 export const FooterRightElementsContainer = styled.div`
 	display: flex;
-	justify-content: flex-end;
+	justify-content: space-between;
 	width: 100%;
 	height: 70px;
 	min-height: 70px;
-	background-color: #fff;
+	background-color: ;
 	flex-direction: row;
 	grid-gap: 10px;
 	align-items: center;
@@ -52,7 +55,10 @@ export const FooterRightElementsContainer = styled.div`
 
 // Styled component for the container of the price information text
 const PriceInfoTextContainer = styled.div`
-	font-size: 14px;
+	font-size: 26px;
+	font-weight:600;
+	font-family:Saira;
+	color:white;
 `;
 
 // Styled component for the content of the out-of-stock tooltip
@@ -62,7 +68,18 @@ const OutOfStockTooltipContent = styled(TooltipContent)`
 
 // Styled component for the "Add to Cart" button
 const AddToCartButton = styled(Button)`
-	min-width: 200px;
+	min-width: 150px;
+	border-radius:10px;
+	border:none;
+    padding: 8px;
+	font-size:20px;
+	font-weight:500;
+	font-family:Saira;
+	background-color:#6633FF;
+	&:hover {
+        background-color: #4c26be;
+		border:none;
+      }
 `;
 
 // FooterDesktop component
@@ -342,7 +359,7 @@ const FooterDesktop = () => {
 					{/* Right elements container */}
 					<FooterRightElementsContainer className='right-footer'>
 						{/* Extension Fields */}
-						{additionalCustomProperties && (
+						{/* {additionalCustomProperties && (
 							<ExtensionFieldsContainer>
 								{additionalCustomProperties.map(
 									(
@@ -358,7 +375,7 @@ const FooterDesktop = () => {
 											<ExtensionFieldItem key={index}>
 												<span>{T._d(extensionField.label)}</span>
 												<div>
-													{/* {formatString(extensionField.formatString, extensionField.value.toString())} */}
+													{formatString(extensionField.formatString, extensionField.value.toString())}
 													{extensionField.value}
 												</div>
 											</ExtensionFieldItem>
@@ -366,31 +383,22 @@ const FooterDesktop = () => {
 									}
 								)}
 							</ExtensionFieldsContainer>
-						)}
+						)} */}
 
 						{/* Price */}
-						{price !== null && price > 0 && (!sellerSettings || !sellerSettings.hidePrice) && (
-							<PriceContainer>
-								{!isOutOfStock && priceFormatter.format(price)}
-								{sellerSettings && sellerSettings.priceInfoText && (
-									<PriceInfoTextContainer
-										dangerouslySetInnerHTML={{ __html: sellerSettings.priceInfoText }}
-									/>
-								)}
-							</PriceContainer>
-						)}
+						
 
 						{/* PDF preview */}
-						{!pdfPreviewDisabled && (
+						{/* {!pdfPreviewDisabled && (
 							<Button key={'pdf'} onClick={() => handlePdfClick()}>
 								<Icon>
 									<PdfSolid />
 								</Icon>
 							</Button>
-						)}
+						)} */}
 
 						{/* Save composition */}
-						{!isDraftEditor &&
+						{/* {!isDraftEditor &&
 							!isEditorMode &&
 							!isViewerMode &&
 							sellerSettings &&
@@ -400,10 +408,10 @@ const FooterDesktop = () => {
 										<SaveSolid />
 									</Icon>
 								</Button>
-							)}
+							)} */}
 
 						{/* Share */}
-						{sellerSettings &&
+						{/* {sellerSettings &&
 							sellerSettings.shareType !== 0 &&
 							!isEditorMode &&
 							!isDraftEditor &&
@@ -413,10 +421,10 @@ const FooterDesktop = () => {
 										<ShareSolid />
 									</Icon>
 								</Button>
-							)}
+							)} */}
 
 						{/* Get a quote */}
-						{product?.quoteRule && !isViewerMode && !isDraftEditor && !isEditorMode && (
+						{/* {product?.quoteRule && !isViewerMode && !isDraftEditor && !isEditorMode && (
 							<Button
 								disabled={disableButtonsByVisibleMessages}
 								key={'quote'}
@@ -426,10 +434,10 @@ const FooterDesktop = () => {
 								{isQuoteLoading && <TailSpin color='#FFFFFF' height='25px' />}
 								{!isQuoteLoading && <span>{T._('Get a quote', 'Composer')}</span>}
 							</Button>
-						)}
+						)} */}
 
 						{/* Add to cart */}
-						{isBuyVisibleForQuoteRule && !isViewerMode && (
+						{/* {isBuyVisibleForQuoteRule && !isViewerMode && ( */}
 							<AddToCartButton
 								ref={addToCartButtonRef}
 								onPointerEnter={() => {
@@ -467,7 +475,27 @@ const FooterDesktop = () => {
 									<span>{T._('Save', 'Composer')}</span>
 								)}
 							</AddToCartButton>
-						)}
+						{/* // )} */}
+					
+					
+					
+					
+					{/* {price !== null && price > 0 && (!sellerSettings || !sellerSettings.hidePrice) && ( */}
+							<div className="">
+								<div className="text-white opacity-30 Saira">
+								<p className='text-base font-normal'>save 30%</p>
+							   </div>
+							
+							<PriceContainer>
+								{!isOutOfStock && priceFormatter.format(price)}
+								{sellerSettings && sellerSettings.priceInfoText && (
+									<PriceInfoTextContainer
+										dangerouslySetInnerHTML={{ __html: sellerSettings.priceInfoText }}
+									/>
+								)}
+							</PriceContainer>
+							</div>
+						{/* )} */}
 					</FooterRightElementsContainer>
 
 					{/* Out-of-stock tooltip */}
