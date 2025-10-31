@@ -88,7 +88,7 @@ export const AttributesContainer = styled.div`
 	/* background-color: white; */
 	color: white;
 	flex: 1;
-	padding:  40px 20px;
+	padding:  20px 40px 10px 10px;
 	min-height: 0;
 	overflow: auto;
 	display: flex;
@@ -165,21 +165,37 @@ export const OptionsContainer = styled.div`
 	overflow-y: auto;
 	overflow-x: hidden;
 `;
-
 export const Options = styled.div`
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-	gap: 20px;
+	grid-template-columns: 1fr; /* 1 column on mobile */
+	gap: 10px;
 	list-style: none;
 	user-select: none;
-	align-items: start;
-	justify-content: start;
-	padding: 30px 0px;
+	align-items: center;
+	justify-content: center;
+	padding: 30px 10px;
 	width: 100%;
-	@media (min-width: 1920px) {
-		grid-template-columns: repeat(auto-fill, minmax(100px, 110px));
+
+	/* Desktop: 2 columns */
+	@media (min-width: 1024px) {
+		grid-template-columns: repeat(2, 1fr);
 	}
 `;
+
+// export const Options = styled.div`
+// 	display: grid;
+// 	grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+// 	gap: 20px;
+// 	list-style: none;
+// 	user-select: none;
+// 	align-items: start;
+// 	justify-content: start;
+// 	padding: 30px 0px;
+// 	width: 100%;
+// 	@media (min-width: 1920px) {
+// 		grid-template-columns: repeat(auto-fill, minmax(100px, 110px));
+// 	}
+// `;
 
 export const TemplatesContainer = styled.div`
 	display: flex;
@@ -479,7 +495,7 @@ export const PriceContainer = styled.div<{ $isMobile?: boolean }>`
 
 export const StepsContainer = styled.div`
 	position: relative;
-	padding: 0px 20px 20px 20px;
+	/* padding: 0px 20px 20px 20px; */
 
 	@media (max-width: 1024px) {
 		width: 100%;

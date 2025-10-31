@@ -36,6 +36,9 @@ import {
 } from '../layout/SharedComponents';
 import Steps from '../layout/Steps';
 import TemplateGroup from 'components/TemplateGroup';
+import uploadIcon from '../../assets/upload.svg';
+import textIcon1 from '../../assets/Text.svg';
+import galleryIcon from '../../assets/Gallery.svg';
 
 export const DesktopRightSidebarContainer = styled.div`
 	display: flex;
@@ -416,11 +419,11 @@ const DesktopRightSidebar = () => {
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isStartRegistering]);
-
+	console.log(actualGroups)
 	return (
 		<DesktopRightSidebarContainer>
 			<GroupsContainer>
-				{actualGroups &&
+				{/* {actualGroups &&
 					!(actualGroups.length === 1 && actualGroups[0].name.toLowerCase() === 'other') &&
 					actualGroups.map((group) => {
 						if (group)
@@ -432,7 +435,6 @@ const DesktopRightSidebar = () => {
 								>
 									<GroupIcon
 										loading='lazy'
-										// fetchpriority="low"
 										src={
 											group.imageUrl && group.imageUrl !== ''
 												? group.id === -3
@@ -442,15 +444,66 @@ const DesktopRightSidebar = () => {
 												? textIcon
 												: star
 										}
-									/>
+									/> */}
 									{/* <span>{group.name ? T._d(group.name) : T._('Customize', 'Composer')}</span> */}
-								</GroupItem>
+								{/* </GroupItem>
 							);
 						else return null;
+					})} */}
+
+				{actualGroups &&
+					!(actualGroups.length === 1 && actualGroups[0].name.toLowerCase() === 'other') &&
+					actualGroups.map((group) => {
+						if (!group) return null;
+
+						// ✅ If group.id === -2 (Customize), replace it with 3 static items
+						if (group.id === -2) {
+							const staticGroups = [
+								{ id: 'upload', name: 'Upload', icon: uploadIcon },
+								{ id: 'text', name: 'Text', icon: textIcon1 },
+								{ id: 'gallery', name: 'Gallery', icon: galleryIcon },
+							];
+
+							return staticGroups.map((staticGroup) => (
+								<GroupItem
+									key={staticGroup.id}
+									// className={
+									// 	'group-item' +
+									// 	(selectedGroupId === -2 && selectedSubGroup === staticGroup.id ? ' selected' : '')
+									// }
+									// onClick={() => handleGroupSelection(-2, staticGroup.id)} 
+								>
+									<GroupIcon src={staticGroup.icon} alt={staticGroup.name} />
+								</GroupItem>
+							));
+						}
+
+						// ✅ Otherwise, render normal groups
+						return (
+							<GroupItem
+								key={group.guid}
+								className={'group-item' + (group.id === selectedGroupId ? ' selected' : '')}
+								onClick={() => handleGroupSelection(group.id)}
+							>
+								<GroupIcon
+									loading='lazy'
+									src={
+										group.imageUrl && group.imageUrl !== ''
+											? group.id === -3
+												? savedCompositionsIcon
+												: group.imageUrl
+											: star
+									}
+								/>
+								{/* Optional: show label */}
+								{/* <span>{group.name ? T._d(group.name) : T._('Customize', 'Composer')}</span> */}
+							</GroupItem>
+						);
 					})}
+
 			</GroupsContainer>
 			<AttributesContainer key={selectedAttributeId}>
-				<div className="border-2 border-[#6633FF] p-5 max-h-[80vh] rounded-3xl">
+				<div className="border-2 border-[#6633FF]  max-h-[80vh] overflow-y-auto  rounded-3xl">
 				{/* Steps */}
 				{selectedGroup && selectedGroupId !== -2 && selectedGroup.steps && selectedGroup.steps.length > 0 && (
 					<Steps
@@ -470,7 +523,7 @@ const DesktopRightSidebar = () => {
 						{/* Attributes */}
 						{selectedGroup?.direction === 0 && (
 							<>
-								<CarouselContainer
+								{/* <CarouselContainer
 									key={selectedGroupId}
 									slidesToShow={window.innerWidth <= 1600 ? 3 : 4}
 									slideIndex={selectedCarouselSlide}
@@ -492,8 +545,8 @@ const DesktopRightSidebar = () => {
 											</SliderArrow>
 										)
 									}
-								>
-									{currentItems &&
+								> */}
+									{/* {currentItems &&
 										currentItems.map((item) => {
 											if (!(item instanceof ThemeTemplateGroup))
 												return (
@@ -527,8 +580,49 @@ const DesktopRightSidebar = () => {
 														</ItemName>
 													</ItemContainer>
 												);
-										})}
-								</CarouselContainer>
+										})} */}
+										{currentItems && (
+											<div className="grid grid-cols-2 justify-center w-full ">
+												{currentItems.map((item ,i) => {
+													const isSelected =
+														!(item instanceof ThemeTemplateGroup)
+															? item.id === lastSelectedItem?.id
+															: item.templateGroupID === lastSelectedItem?.id;
+
+													const handleClick = () => {
+														if (item instanceof ThemeTemplateGroup)
+															handleTemplateGroupSelection(item.templateGroupID);
+														else handleAttributeSelection(item.id);
+													};
+
+													return (
+														<div
+															key={i}
+															onClick={handleClick}
+															className={`cursor-pointer p-1 text-center  transition-all duration-300 ${isSelected
+																? "bg-[#6633FF80] text-white border border-[#3f22c6]"
+																: "bg-[#3A3D56] text-gray-300 hover:bg-white/20"
+																}`}
+														>
+															<div className="font-medium text-xs uppercase">
+																{T._d(item.name)}
+															</div>
+
+															{/* Show selected option name (if available) */}
+															{!(item instanceof ThemeTemplateGroup) && (
+																<div className="text-xs opacity-80 mt-0.5">
+																	{item.options.find((opt) => opt.selected)
+																		? T._d(item.options.find((opt) => opt.selected)!.name)
+																		: ""}
+																</div>
+															)}
+														</div>
+													);
+												})}
+											</div>
+										)}
+
+								{/* </CarouselContainer> */}
 
 								{lastSelectedItem?.type === 'attribute' ? (
 									<>

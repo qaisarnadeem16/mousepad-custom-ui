@@ -13,17 +13,22 @@ const OptionContainer = styled.div<{ optionShape: number; selected: boolean; has
 	position: relative;
 	padding: ${(props) => (props.hasDescriptionIcon ? '26px' : '10px')} 0px 10px 0;
 	user-select: none;
-	width: 100%;
+	width: 130px;
+	height: 105px;
 	min-width: 0;
-
+	border-radius: 10px;
+	padding: 5px;
+border: 1px solid #836ACE4F;
 	&:hover {
-		background-color: #f5f6f7;
+		/* background-color: #f5f6f7; */
 	}
 
 	${(props) =>
 		props.selected &&
 		`
-        background-color: #f5f6f7;
+		border: 1px solid #6633FF;
+
+        // background-color: #f5f6f7;
     `}
 `;
 
@@ -125,7 +130,7 @@ const OptionItem: FC<{
 				)}
 			</OptionIconContainer>
 
-			{!option.attribute.hideOptionsLabel && <OptionName>{T._d(option.name)}</OptionName>}
+			{/* {!option.attribute.hideOptionsLabel && <OptionName>{T._d(option.name)}</OptionName>} */}
 		</OptionContainer>
 	);
 };
