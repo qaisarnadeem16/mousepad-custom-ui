@@ -133,12 +133,12 @@ const ItemImage: FC<{
 				<ImagePreview>
 					<img src={item.url} alt='' />
 				</ImagePreview>
-				<div className='flex gap-2 items-center'>
-					{showUploadButton && (
+				<div className='flex justify-end gap-2 items-center'>
+					{/* {showUploadButton && (
 						<ReuseBtn variant='outline' disabled={uploadImgDisabled}  onClick={handleChangeClick}>
 							{T._('Edit', 'Composer')}
 						</ReuseBtn>
-					)}
+					)} */}
 					{/* {showGalleryButton && (
 						<ReuseBtn variant='delete' onClick={handleGalleryClick}>
 							{T._('Gallery', 'Composer')}

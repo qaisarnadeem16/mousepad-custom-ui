@@ -35,9 +35,9 @@ export const Icon = styled.div<{ hoverable?: boolean }>`
 export const TextArea = styled.textarea`
 	background-color: transparent;
 	padding: 10px 20px;
-	color: #414042;
+	color: white;
 	font-size: 14px;
-	border: 1px #f4f4f4 solid;
+	border: 1px #6633FF solid;
 	width: 100%;
 	min-height: 100px;
 	font-family: 'Montserrat', sans-serif;
@@ -45,11 +45,11 @@ export const TextArea = styled.textarea`
 	resize: none;
 
 	&:hover {
-		border: 1px black solid;
+		border: 1px #6633FF solid;
 	}
 
 	&:focus {
-		border: 1px black solid;
+		border: 1px #6633FF solid;
 		outline: none;
 	}
 `;

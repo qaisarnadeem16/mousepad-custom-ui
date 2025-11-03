@@ -29,11 +29,11 @@ export const FooterContainer = styled.div`
 	display: flex;
 	flex-direction: row;
 	height: 120px;
-	border-top:2px solid #6633FF;
-	width:497px;
+	border-top:1px solid #6633FF;
 	background-color: #090B38;
 	padding-top: 10px;
-	border-bottom-right-radius: 5px;
+	border-bottom-right-radius: 30px;
+	box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
 `;
 
 export const FooterRightElementsContainer = styled.div`

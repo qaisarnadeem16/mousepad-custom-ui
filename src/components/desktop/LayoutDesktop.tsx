@@ -30,6 +30,7 @@ export const Top = styled.div`
 	display: grid;
 	grid-template-columns: 1fr 70%;
 	min-height: 0;
+	overflow:hidden;
   
   @media (max-width: 1024px) {
     display: flex;
@@ -50,7 +51,6 @@ function LayoutDesktop() {
 				<DesktopRightSidebar />
 				<Viewer3D />
 			</Top>
-			<FooterDesktop />
 		</LayoutDesktopContainer>
 	);
 }

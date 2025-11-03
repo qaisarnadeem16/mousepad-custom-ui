@@ -39,16 +39,20 @@ import TemplateGroup from 'components/TemplateGroup';
 import uploadIcon from '../../assets/upload.svg';
 import textIcon1 from '../../assets/Text.svg';
 import galleryIcon from '../../assets/Gallery.svg';
+import FooterDesktop from './FooterDesktop';
 
 export const DesktopRightSidebarContainer = styled.div`
 	display: flex;
 	flex-flow: row;
 	justify-content: flex-start;
-	min-height: 0;
+	min-height: 80vh;
+	margin-top:10px;
+	padding:10px 0px;
 	background-color: #090B38;
 	/* padding: 20px; */
-	border-radius: 20px;
-
+	// border-radius: 20px;
+	border-top-right-radius: 30px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
 	@media (max-width: 1024px) {
 		width: 100%;
 		height: 50%;
@@ -449,7 +453,8 @@ const DesktopRightSidebar = () => {
 	};
 	console.log(actualGroups)
 	return (
-		<DesktopRightSidebarContainer>
+		<div className="h-screen overflow-auto">
+			<DesktopRightSidebarContainer>
 			<GroupsContainer>
 				{/* {actualGroups &&
 					!(actualGroups.length === 1 && actualGroups[0].name.toLowerCase() === 'other') &&
@@ -533,7 +538,7 @@ const DesktopRightSidebar = () => {
 
 			</GroupsContainer>
 			<AttributesContainer key={selectedAttributeId}>
-				<div className="border-2 border-[#6633FF]  min-h-full overflow-y-auto  rounded-3xl">
+				<div className="border-2 border-[#6633FF] max-h-[30vh] min-h-full overflow-hidden  rounded-3xl">
 					{/* Steps */}
 					{selectedGroup && selectedGroupId !== -2 && selectedGroup.steps && selectedGroup.steps.length > 0 && (
 						<Steps
@@ -630,7 +635,7 @@ const DesktopRightSidebar = () => {
 														key={i}
 														onClick={handleClick}
 														className={`cursor-pointer p-1 text-center  transition-all duration-300 ${isSelected
-															? "bg-[#6633FF80] text-white border border-[#3f22c6]"
+															? "bg-[#6633FF80] text-white border border-[#6633FF80]"
 															: "bg-[#3A3D56] text-gray-300 hover:bg-white/20"
 															}`}
 													>
@@ -787,6 +792,9 @@ const DesktopRightSidebar = () => {
 				</div>
 			</AttributesContainer>
 		</DesktopRightSidebarContainer>
+		
+	    <FooterDesktop/>
+		</div>
 	);
 };
 

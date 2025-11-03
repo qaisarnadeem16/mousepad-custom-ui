@@ -49,6 +49,7 @@ export const GroupItem = styled.div`
 
 	&.selected {
 		background-color: #6633FF;
+		box-shadow: 0px 4px 12.9px 0px #6633FF;
 	}
 
 	span {

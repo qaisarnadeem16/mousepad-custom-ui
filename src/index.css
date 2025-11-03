@@ -25,9 +25,29 @@ html,
   -webkit-tap-highlight-color: transparent;
 }
 
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;           /* scrollbar thickness (vertical) */
+  height: 5px;          /* scrollbar height (horizontal) */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent; /* background of scrollbar area */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #6633FF;     /* scrollbar thumb color */
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #8258ff;     /* lighter shade on hover */
+}
+
+
 ::-webkit-scrollbar {
   padding: 1px;
   width: 5px;
+  height: 6px;  
   background: lightgray;
 }
 

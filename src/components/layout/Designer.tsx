@@ -35,7 +35,6 @@ import {
 import AddTextDialog from '../dialogs/AddTextDialog';
 import { useDialogManager } from '../dialogs/Dialogs';
 import ErrorDialog from '../dialogs/ErrorDialog';
-import ImagesGalleryDialog from '../dialogs/ImagesGalleryDialog';
 import ItemImage, { EditImageItem } from '../widgets/ItemImage';
 import ItemText, { EditTextItem } from '../widgets/ItemText';
 import {
@@ -62,37 +61,44 @@ export interface TranslatedTemplate {
 	name: string;
 }
 
+interface Image {
+	imageID: number;
+	name: string;
+	choiceUrl: string;
+	preferredWidth: number | null;
+	preferredHeight: number | null;
+}
+
 const ZoomIconIn = styled(ZoomInIcon)`
 	left: 0px;
 `;
+
 const ZoomIconOut = styled(ZoomOutIcon)`
 	left: 0px;
 `;
 
-const MoveElementButton = styled(Button)`
-	/* position: absolute;
-	bottom: 0; */
-`;
+const MoveElementButton = styled(Button)``;
 
 const DesignerContainer = styled.div<{ $isMobile?: boolean }>`
 	display: flex;
 	flex-flow: column;
 	user-select: none;
 	width: 100%;
+	overflow: auto;
+	max-height: 72vh;
 	padding: 0px 20px;
-	/* padding: 30px 30px 70px 30px; */
 	${(props) =>
 		props.$isMobile &&
 		`
-        position:fixed;
-        top:0;
-        left:0;
-        width:100%;
-        height:100%;
-        z-index:11;
-        background-color:#ffffff;
-        overflow-y:scroll;
-    `}
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 11;
+		background-color: #ffffff;
+		overflow-y: scroll;
+	`}
 `;
 
 const UploadButtons = styled.div`
@@ -121,8 +127,8 @@ const Area = styled.div<{ selected?: boolean }>`
 	${(props) =>
 		props.selected &&
 		`
-       border-bottom: 5px solid #c4c4c4;
-    `}
+		border-bottom: 5px solid #c4c4c4;
+	`}
 `;
 
 const SelectOptionLabel = styled.span`
@@ -132,22 +138,6 @@ const SelectOptionLabel = styled.span`
 const SelectSingleValueLabel = styled.span`
 	color: black;
 `;
-
-const SelectOption = (props: JSX.IntrinsicAttributes & OptionProps<any, boolean, GroupBase<any>>) => {
-	return (
-		<components.Option {...props}>
-			<SelectOptionLabel>{props.data.name}</SelectOptionLabel>
-		</components.Option>
-	);
-};
-
-const SelectSingleValue = (props: JSX.IntrinsicAttributes & SingleValueProps<any, boolean, GroupBase<any>>) => {
-	return (
-		<components.SingleValue {...props}>
-			<SelectSingleValueLabel>{props.data.name}</SelectSingleValueLabel>
-		</components.SingleValue>
-	);
-};
 
 const CopyrightMessage = styled.div`
 	display: flex;
@@ -166,7 +156,155 @@ const CopyrightCheckbox = styled.input`
 
 const CopyrightMandatoryMessage = styled.div``;
 
-const Designer: FC<{ onCloseClick?: () => void, customizeTab?:string | null }> = ({ onCloseClick, customizeTab }) => {
+const ClipArtGalleryContainer = styled.div`
+	margin-top: 20px;
+`;
+
+const ClipArtHeader = styled.div`
+	margin-bottom: 15px;
+`;
+const ClipArtCategorySelect = styled.select`
+	width: 100%;
+	padding: 12px 15px;
+	border: 2px solid #6633FF;
+	border-radius: 8px;
+	font-size: 15px;
+	font-weight: 500;
+	background-color: transparent;
+	cursor: pointer;
+	transition: all 0.2s;
+	color:white;
+	
+	&:hover {
+		border-color: #d1d5db;
+	}
+	
+	&:focus {
+		outline: none;
+		border-color: #6633FF;
+		box-shadow: 0 0 0 3px rgba(102, 51, 255, 0.1);
+	}
+	
+	option {
+		padding: 10px;
+	}
+`;
+
+const ClipArtGrid = styled.div`
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+	gap: 15px;
+	max-height: 500px;
+	overflow-y: auto;
+	padding: 15px;
+	border: 2px solid #6633FF;
+	background-color: transparent;
+	border-radius: 8px;
+	
+	/* Custom scrollbar */
+	&::-webkit-scrollbar {
+		width: 8px;
+	}
+	
+	&::-webkit-scrollbar-track {
+		background: #e5e7eb;
+		border-radius: 4px;
+	}
+	
+	&::-webkit-scrollbar-thumb {
+		background: #9ca3af;
+		border-radius: 4px;
+	}
+	
+	&::-webkit-scrollbar-thumb:hover {
+		background: #6b7280;
+	}
+`;
+
+const ClipArtItem = styled.div<{ isActive?: boolean }>`
+	cursor: pointer;
+	border: 1px solid ${props => props.isActive ? '#6633FFC7' : '#6633FF'};
+	border-radius: 12px;
+	padding: 8px;
+	transition: all 0.3s ease;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-height: 100px;
+	position: relative;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+	&:hover {
+		border-color: #6633FF;
+		transform: scale(1.08);
+		box-shadow: 0 4px 12px rgba(102, 51, 255, 0.2);
+	}
+
+	${props => props.isActive && `
+		box-shadow: 0 4px 12px rgba(102, 51, 255, 0.3);
+		background-color: #f3f4f6;
+		
+		&::after {
+			content: '✓';
+			position: absolute;
+			top: 5px;
+			right: 5px;
+			background-color: #6633FFC7;
+			color: white;
+			width: 24px;
+			height: 24px;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 14px;
+			font-weight: bold;
+		}
+	`}
+
+	img {
+		width: 100%;
+		height: auto;
+		max-height: 120px;
+		object-fit: contain;
+		display: block;
+		border-radius: 6px;
+	}
+`;
+
+const LoadingText = styled.p`
+	text-align: center;
+	padding: 40px 20px;
+	color: #6b7280;
+	font-size: 16px;
+	font-weight: 500;
+`;
+
+const EmptyStateText = styled.p`
+	text-align: center;
+	padding: 40px 20px;
+	color: #9ca3af;
+	font-size: 15px;
+`;
+
+const SelectOption = (props: JSX.IntrinsicAttributes & OptionProps<any, boolean, GroupBase<any>>) => {
+	return (
+		<components.Option {...props}>
+			<SelectOptionLabel>{props.data.name}</SelectOptionLabel>
+		</components.Option>
+	);
+};
+
+const SelectSingleValue = (props: JSX.IntrinsicAttributes & SingleValueProps<any, boolean, GroupBase<any>>) => {
+	return (
+		<components.SingleValue {...props}>
+			<SelectSingleValueLabel>{props.data.name}</SelectSingleValueLabel>
+		</components.SingleValue>
+	);
+};
+
+const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> = ({ onCloseClick, customizeTab }) => {
 	const { showDialog, closeDialog } = useDialogManager();
 	const [forceUpdate, setForceUpdate] = useState(false);
 	const { setIsLoading, isMobile, setUnsupportedCharactersFromText, removedUnsupportedCharactersFromTextMap } =
@@ -195,8 +333,11 @@ const Designer: FC<{ onCloseClick?: () => void, customizeTab?:string | null }> =
 		getTemplateUploadRestrictions,
 		eventMessages,
 		setCopyrightMessageAccepted,
-		getCopyrightMessageAccepted
+		getCopyrightMessageAccepted,
+		getMacroCategories,
+		getImages
 	} = useZakeke();
+
 	const customizerRef = useRef<any | null>(null);
 	const [selectedCarouselSlide, setSelectedCarouselSlide] = useState<number>(0);
 
@@ -204,6 +345,16 @@ const Designer: FC<{ onCloseClick?: () => void, customizeTab?:string | null }> =
 	let finalVisibleAreas: ProductArea[] = [];
 
 	const [moveElements, setMoveElements] = useState(false);
+
+	// Clipart gallery states
+	const [isLoadingImages, setIsLoadingImages] = useState(false);
+	const [macroCategories, setMacroCategories] = useState<ImageMacroCategory[]>([]);
+	const [selectedMacroCategory, setSelectedMacroCategory] = useState<ImageMacroCategory | null>(null);
+	const [selectedCategory, setSelectedCategory] = useState<ImageCategory | null>();
+	const [images, setImages] = useState<Image[]>([]);
+	const [selectedImageId, setSelectedImageId] = useState<number | null>(null);
+	const [currentClipartGuid, setCurrentClipartGuid] = useState<string | null>(null);
+	const [categories, setCategories] = useState<ImageCategory[]>([]);
 
 	const translatedTemplates = templates.map((template) => {
 		return { id: template.id, name: T._d(template.name), areas: template.areas };
@@ -266,22 +417,47 @@ const Designer: FC<{ onCloseClick?: () => void, customizeTab?:string | null }> =
 
 	const setTemplateByID = async (templateID: number) => await setTemplate(templateID);
 
+	// Load categories on mount
+	useEffect(() => {
+		const fetchCategories = async () => {
+			try {
+				const macroCategories = await getMacroCategories();
+				const allCategories = macroCategories.flatMap((macro) => macro.categories);
+				setCategories(
+					allCategories.filter(
+						(cat: { name: string }) =>
+							!['gray print areas', 'print area'].includes(cat.name.trim().toLowerCase())
+					)
+				);
+
+				if (allCategories.length > 0) {
+					handleCategoryClick(allCategories[0]);
+				}
+			} catch (error) {
+				console.error('Error fetching categories:', error);
+			}
+		};
+
+		fetchCategories();
+	}, []);
+
+	// Reset selected image when area changes
+	useEffect(() => {
+		setSelectedImageId(null);
+		setCurrentClipartGuid(null);
+	}, [actualAreaId]);
+
 	useEffect(() => {
 		if (templates.length > 0 && !currentTemplate) setTemplateByID(templates[0].id);
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [templates]);
 
 	useEffect(() => {
 		const area = filteredAreas.filter((a) => a.id === actualAreaId);
 		if (area && area.length > 0) setCamera(area[0].cameraLocationID as string);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [actualAreaId]);
 
 	useEffect(() => {
 		if (finalVisibleAreas.length > 0 && actualAreaId === 0) setActualAreaId(finalVisibleAreas[0].id);
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [finalVisibleAreas]);
 
 	function getSupportedUploadFileFormats(areaId: number) {
@@ -289,13 +465,9 @@ const Designer: FC<{ onCloseClick?: () => void, customizeTab?:string | null }> =
 		const fileFormats: string[] = [];
 
 		if (restrictions.isJpgAllowed) fileFormats.push('.jpg', '.jpeg');
-
 		if (restrictions.isPngAllowed) fileFormats.push('.png');
-
 		if (restrictions.isSvgAllowed) fileFormats.push('.svg');
-
 		if (restrictions.isEpsAllowed) fileFormats.push('.eps');
-
 		if (restrictions.isPdfAllowed) fileFormats.push('.pdf');
 
 		return fileFormats;
@@ -328,6 +500,51 @@ const Designer: FC<{ onCloseClick?: () => void, customizeTab?:string | null }> =
 		else return common || image;
 	};
 
+	const handleCategoryClick = async (category: ImageCategory) => {
+		try {
+			setSelectedImageId(null);
+			setCurrentClipartGuid(null);
+			setSelectedCategory(category);
+			setIsLoadingImages(true);
+			const images = await getImages(category.categoryID!);
+			setImages(images);
+			setIsLoadingImages(false);
+		} catch (ex) {
+			console.error('Error loading images:', ex);
+			setIsLoadingImages(false);
+		}
+	};
+
+	const handleAddClipArt = async (image: Image) => {
+		if (selectedImageId === image.imageID) {
+			// Deselect and remove current
+			if (currentClipartGuid) {
+				removeItem(currentClipartGuid);
+			}
+			setSelectedImageId(null);
+			setCurrentClipartGuid(null);
+			return;
+		}
+
+		// Remove previous if any
+		if (currentClipartGuid) {
+			removeItem(currentClipartGuid);
+		}
+
+		// Select and add new
+		setSelectedImageId(image.imageID);
+		try {
+			const guid = await addItemImage(image.imageID, actualAreaId);
+			if (guid) {
+				setCurrentClipartGuid(guid);
+			}
+		} catch (error) {
+			console.error('Error adding clipart:', error);
+			// Optionally reset on error
+			setSelectedImageId(null);
+		}
+	};
+
 	const handleAddTextClick = () => {
 		showDialog(
 			'add-text',
@@ -339,41 +556,6 @@ const Designer: FC<{ onCloseClick?: () => void, customizeTab?:string | null }> =
 				}}
 			/>
 		);
-	};
-
-	const handleAddImageFromGalleryClick = async () => {
-		showDialog(
-			'add-image',
-			<ImagesGalleryDialog
-				onClose={() => closeDialog('add-image')}
-				onImageSelected={(image: { imageID: number }) => {
-					addItemImage(image.imageID, actualAreaId);
-					closeDialog('add-image');
-				}}
-			/>
-		);
-	};
-	const handleAddClipArt = async (image: Image) => {
-	
-
-		setSelectedImageIds((prev) => {
-			if (prev.includes(image.imageID)) {
-				return prev.filter((id) => id !== image.imageID);
-			} else {
-				return [...prev, image.imageID];
-			}
-		});
-
-		setActiveButton('pattern');
-		closeDialog('add-image');
-
-		try {
-			const guid = await addItemImage(image.imageID, actualAreaId);
-			if (!guid) return;
-			
-		} catch (error) {
-			console.error('Error adding and configuring clipart:', error);
-		}
 	};
 
 	const handleUploadImageClick = async () => {
@@ -425,23 +607,14 @@ const Designer: FC<{ onCloseClick?: () => void, customizeTab?:string | null }> =
 	};
 
 	const handleItemImageGallery = async (item: EditImageItem) => {
-		showDialog(
-			'add-image',
-			<ImagesGalleryDialog
-				onClose={() => closeDialog('add-image')}
-				onImageSelected={async (image) => {
-					closeDialog('add-image');
-					try {
-						setIsLoading(true);
-						await setItemImage(item.guid, image.imageID);
-					} catch (ex) {
-						console.error(ex);
-					} finally {
-						setIsLoading(false);
-					}
-				}}
-			/>
-		);
+		try {
+			setIsLoading(true);
+			// You can implement inline selection here too if needed
+		} catch (ex) {
+			console.error(ex);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	function getRemovedCharacters(original: string | any[], sanitized: string | any[]) {
@@ -473,14 +646,11 @@ const Designer: FC<{ onCloseClick?: () => void, customizeTab?:string | null }> =
 				handleItemImageGallery(item as EditImageItem);
 				break;
 			case 'text':
-				console.log('text', value);
 				let updatedText = setItemText(item.guid, value as string);
 				if (updatedText !== value) {
 					let removedChars = getRemovedCharacters(value as string, updatedText);
-					console.log('testo aggiornato, caratteri rimossi: ' + removedChars);
 					setUnsupportedCharactersFromText(item.guid, removedChars.split(''));
 				} else if (updatedText === value && removedUnsupportedCharactersFromTextMap[item.guid]) {
-					console.log('rimuovo item testo dalla lista dei testi con caratteri non supportati');
 					setUnsupportedCharactersFromText(item.guid);
 				}
 				break;
@@ -494,9 +664,7 @@ const Designer: FC<{ onCloseClick?: () => void, customizeTab?:string | null }> =
 				setItemColor(item.guid, value as string);
 				break;
 			case 'font-family':
-				console.log(item);
 				setItemFontFamily(item.guid, value as string);
-				console.log(item);
 				break;
 			case 'text-path':
 				setItemTextOnPath(item.guid, actualAreaId, value as boolean);
@@ -505,109 +673,6 @@ const Designer: FC<{ onCloseClick?: () => void, customizeTab?:string | null }> =
 		}
 	};
 
-
-	interface Image {
-		imageID: number;
-		name: string;
-		choiceUrl: string;
-		preferredWidth: number | null;
-		preferredHeight: number | null;
-	}
-
-	const { getMacroCategories, getImages } = useZakeke();
-	const [isLoading, setIsloading] = useState(false);
-	const [isClipArt, setClipArt] = useState(false);
-	const [isDesign, setDesign] = useState(false);
-	const [macroCategories, setMacroCategories] = useState<ImageMacroCategory[]>([]);
-	const [selectedMacroCategory, setSelectedMacroCategory] = useState<ImageMacroCategory | null>(
-		null
-	);
-	const [selectedCategory, setSelectedCategory] = useState<ImageCategory | null>();
-	const [images, setImages] = useState<Image[]>();
-	const [selectedImageIds, setSelectedImageIds] = useState<number[]>([]);
-	const [activeButton, setActiveButton] = useState<string | null>(null);
-	const [categories, setCategories] = useState<ImageCategory[]>([]);
-
-	const removeItemsInArea = (areaId: number, areaName: string, typeToRemove: 'Text' | 'Image') => {
-		const allowedAreas = ['Front Waistband', 'Back Waistband'];
-		if (!allowedAreas.includes(areaName)) return;
-
-		items
-			.filter((item) => item.areaId === areaId)
-			.forEach((item) => {
-				if (
-					(typeToRemove === 'Text' && item.type === 0) ||
-					(typeToRemove === 'Image' && item.type === 1)
-				) {
-					removeItem(item.guid);
-				}
-			});
-	};
-	useEffect(() => {
-		setSelectedImageIds([]);
-		setActiveButton(null);
-	}, [actualAreaId]);
-
-	useEffect(() => {
-		const fetchCategories = async () => {
-			try {
-				// setIsLoading(true);
-				const macroCategories = await getMacroCategories();
-				const allCategories = macroCategories.flatMap((macro) => macro.categories);
-				setCategories(
-					allCategories.filter(
-						(cat: { name: string }) =>
-							!['gray print areas', 'print area'].includes(cat.name.trim().toLowerCase())
-					)
-				);
-
-				setIsLoading(false);
-
-				if (allCategories.length > 0) {
-					handleCategoryClick(allCategories[2]);
-				}
-			} catch (error) {
-				console.error(error);
-			}
-		};
-
-		fetchCategories();
-	}, []);
-
-	const updateCategories = async () => {
-		try {
-			setIsloading(true);
-			let macroCategories = await getMacroCategories();
-			setIsloading(false);
-			setMacroCategories(macroCategories);
-			handleMacroCategoryClick(macroCategories[0]);
-		} catch (ex) {
-			console.error(ex);
-		}
-	};
-
-	const handleMacroCategoryClick = async (macroCategory: ImageMacroCategory) => {
-		setSelectedMacroCategory(macroCategory);
-		setCategories(
-			macroCategory.categories.filter((cat: { name: string }) => cat.name !== 'Gray print areas ')
-		);
-
-		console.log(categories);
-
-		handleCategoryClick(macroCategory.categories[0]);
-	};
-	const handleCategoryClick = async (category: ImageCategory) => {
-		try {
-			setSelectedImageIds([]);
-			setSelectedCategory(category);
-			// setIsLoading(true);
-			const images = await getImages(category.categoryID!);
-			setImages(images);
-			setIsLoading(false);
-		} catch (ex) {
-			console.error(ex);
-		}
-	};
 	return (
 		<>
 			{!moveElements && (
@@ -700,6 +765,7 @@ const Designer: FC<{ onCloseClick?: () => void, customizeTab?:string | null }> =
 							</FormControl>
 						</SelectContainer>
 					)}
+
 					{isMobile && finalVisibleAreas.length > 1 && (
 						<SelectContainer>
 							<FormControl label={T._('Customizable Areas', 'Composer')}>
@@ -725,142 +791,142 @@ const Designer: FC<{ onCloseClick?: () => void, customizeTab?:string | null }> =
 						</SelectContainer>
 					)}
 
-				
-
 					{(showAddTextButton || showUploadButton || showGalleryButton) && (
 						<UploadButtons>
-							{showAddTextButton && customizeTab === "text" &&(
-								<ReuseBtn  onClick={handleAddTextClick}>
-									<Icon>
-										<Add />
-									</Icon>
-									<span>{T._('Add text', 'Composer')}</span>
-								</ReuseBtn>
-							)}
+							{/* Add Text Section */}
+							<div className="w-full">
+								{customizeTab === 'text' && (
+									<>
+										<h1 className="pb-3">Add Text</h1>
+										{showAddTextButton && (
+											<ReuseBtn className="w-full" onClick={handleAddTextClick}>
+												<Icon>
+													<Add />
+												</Icon>
+												<span>{T._('Add text', 'Composer')}</span>
+											</ReuseBtn>
+										)}
+									</>
+								)}
+							</div>
 
-							{showGalleryButton && customizeTab === "gallery" && (
-								<ReuseBtn  onClick={handleAddImageFromGalleryClick}>
-									<Icon>
-										<Add />
-									</Icon>
-									<span>{T._('Add clipart', 'Composer')}</span>
-								</ReuseBtn>
-							)}
-
-							{showUploadButton && customizeTab === "upload" && (
-								<>
-									<button 
-										disabled={
-											copyrightMessage && copyrightMessage.additionalData.enabled
-												? !copyrightMandatoryCheckbox
-												: false
-										}
+							{/* Clipart Gallery Section - Inline Display */}
+							<div className="w-full">
+								{customizeTab === 'gallery' && showGalleryButton && (
+									<>
+										<h1 className="pb-3 text-xl font-semibold">Add Clipart</h1>
 										
-										onClick={handleUploadImageClick}
-									className="flex flex-col gap-1 items-center justify-center rounded-md border border-[#6633FFC7] w-full p-2 text-center text-white shadow-md transition hover:shadow-lg hover:border-[#8F6FFF]">
-										<svg width="26" height="26" viewBox="0 0 26 26" fill="none" >
-											<g clip-path="url(#clip0_95_304)">
-												<path d="M8.40712 7.20499L11.4197 4.1913L11.4425 18.9587C11.4425 19.8561 12.17 20.5836 13.0674 20.5836C13.9648 20.5836 14.6924 19.8561 14.6924 18.9587L14.6696 4.20974L17.6649 7.20504C18.2884 7.85054 19.3171 7.86842 19.9626 7.24495C20.6081 6.62149 20.6259 5.5928 20.0025 4.9473C19.9894 4.93374 19.9761 4.92044 19.9626 4.90739L16.483 1.42786C14.5793 -0.475903 11.4928 -0.475903 9.58901 1.4278L9.58896 1.42786L6.10947 4.90734C5.48601 5.55284 5.50388 6.58152 6.14939 7.20499C6.7791 7.81317 7.77741 7.81317 8.40712 7.20499Z" fill="white" />
-												<path d="M24.3744 15.7087C23.477 15.7087 22.7495 16.4363 22.7495 17.3337V22.307C22.7489 22.5515 22.5509 22.7495 22.3065 22.7501H3.6934C3.44895 22.7495 3.25091 22.5515 3.25035 22.307V17.3337C3.25035 16.4363 2.52284 15.7087 1.62542 15.7087C0.728 15.7087 0.000488281 16.4363 0.000488281 17.3337V22.307C0.0028749 24.3456 1.65487 25.9975 3.6934 25.9999H22.3064C24.345 25.9975 25.9969 24.3455 25.9993 22.307V17.3337C25.9994 16.4363 25.2719 15.7087 24.3744 15.7087Z" fill="white" />
-											</g>
-											<defs>
-												<clipPath id="clip0_95_304">
-													<rect width="26" height="26" fill="white" />
-												</clipPath>
-											</defs>
-										</svg>
-										<span className=" text-white text-xs">
-
-										{itemsFiltered.some(
-											(item) =>
-												item.type === 1 && isItemEditable(item, currentTemplateArea)
-										)
-											? T._('Upload another image', 'Composer')
-											: T._('Upload Images', 'Composer')}{' '}
-											</span>
-
-										<p className="text-xs mb-2 text-gray-300">(Max size: 2MB)</p>
-
-											<SupportedFormatsList>
-												<span className=" text-white text-[10px]">
-													{T._('Supported file formats:', 'Composer') + ' ' + supportedFileFormats}
-												</span>
-											</SupportedFormatsList>
-									</button>
-									{/* <Button
-										disabled={
-											copyrightMessage && copyrightMessage.additionalData.enabled
-												? !copyrightMandatoryCheckbox
-												: false
-										}
-										isFullWidth
-										onClick={handleUploadImageClick}
-									>
-										<Icon>
-											<Add />
-										</Icon>
-										<span>
-											<span>
-												{itemsFiltered.some(
-													(item) =>
-														item.type === 1 && isItemEditable(item, currentTemplateArea)
-												)
-													? T._('Upload another image', 'Composer')
-													: T._('Upload Images', 'Composer')}{' '}
-											</span>
-										</span>
-									</Button> */}
-								</>
-							)}
-							
-							{images &&  customizeTab === "gallery" &&  (
-							<div className="">
-										<div className="">
-										<span className="badges-header">
-
-										</span>
-										<div className="badges-select-wrapper">
-											<select
-												className="badges-select"
-												value={selectedCategory?.categoryID?.toString() ?? ''}
-												onChange={(e) => {
-													const selectedId = Number(e.target.value);
-													const cat = categories.find((c) => c.categoryID === selectedId);
-													if (cat) handleCategoryClick(cat);
-												}}
-											>
-												{categories?.map((cat) => (
-													<option key={cat.categoryID} value={cat.categoryID?.toString()}>
-														{cat.name}
-													</option>
-												))}
-											</select>
-										</div>
-									</div>
-									{isLoading ? (
-										<p>Loading...</p>
-									) : (
-										<div className=' flex flex-wrap'>
-											{images.map((image) => (
-												<div
-													// isActive={selectedImageIds.includes(image.imageID)}
-													key={image.imageID.toString()}
-													onClick={() => handleAddClipArt(image)}
+										<ClipArtGalleryContainer>
+											<ClipArtHeader>
+												<ClipArtCategorySelect
+													value={selectedCategory?.categoryID?.toString() ?? ''}
+													onChange={(e) => {
+														const selectedId = Number(e.target.value);
+														const cat = categories.find((c) => c.categoryID === selectedId);
+														if (cat) {
+															setSelectedImageId(null);
+															setCurrentClipartGuid(null);
+															handleCategoryClick(cat);
+														}
+													}}
 												>
-													<img src={image.choiceUrl} alt={image.name} />
-												</div>
-											))}
-										</div>
-									)}
-							</div>)}
+													<option value="" disabled>Select a category</option>
+													{categories?.map((cat) => (
+														<option key={cat.categoryID} value={cat.categoryID?.toString()}>
+															{cat.name}
+														</option>
+													))}
+												</ClipArtCategorySelect>
+											</ClipArtHeader>
 
+											{isLoadingImages ? (
+												<LoadingText>Loading cliparts...</LoadingText>
+											) : images && images.length > 0 ? (
+												<ClipArtGrid>
+													{images.map((image) => (
+														<ClipArtItem
+															key={image.imageID}
+															isActive={selectedImageId === image.imageID}
+															onClick={() => handleAddClipArt(image)}
+															title={image.name}
+														>
+															<img 
+																src={image.choiceUrl} 
+																alt={image.name}
+																loading="lazy"
+															/>
+														</ClipArtItem>
+													))}
+												</ClipArtGrid>
+											) : (
+												<EmptyStateText>No cliparts available in this category</EmptyStateText>
+											)}
+										</ClipArtGalleryContainer>
+									</>
+								)}
+							</div>
+
+							{/* Upload Image Section */}
+							<div className="w-full">
+								{customizeTab === 'upload' && (
+									<>
+										<h1 className="pb-4">Upload Image</h1>
+										{showUploadButton && (
+											<>
+												<button
+													disabled={
+														copyrightMessage && copyrightMessage.additionalData.enabled
+															? !copyrightMandatoryCheckbox
+															: false
+													}
+													onClick={handleUploadImageClick}
+													className="flex flex-col gap-1 items-center justify-center rounded-md border border-[#6633FFC7] w-full p-2 text-center text-white shadow-md transition hover:shadow-lg hover:border-[#8F6FFF]"
+												>
+													<svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+														<g clipPath="url(#clip0_95_304)">
+															<path
+																d="M8.40712 7.20499L11.4197 4.1913L11.4425 18.9587C11.4425 19.8561 12.17 20.5836 13.0674 20.5836C13.9648 20.5836 14.6924 19.8561 14.6924 18.9587L14.6696 4.20974L17.6649 7.20504C18.2884 7.85054 19.3171 7.86842 19.9626 7.24495C20.6081 6.62149 20.6259 5.5928 20.0025 4.9473C19.9894 4.93374 19.9761 4.92044 19.9626 4.90739L16.483 1.42786C14.5793 -0.475903 11.4928 -0.475903 9.58901 1.4278L9.58896 1.42786L6.10947 4.90734C5.48601 5.55284 5.50388 6.58152 6.14939 7.20499C6.7791 7.81317 7.77741 7.81317 8.40712 7.20499Z"
+																fill="white"
+															/>
+															<path
+																d="M24.3744 15.7087C23.477 15.7087 22.7495 16.4363 22.7495 17.3337V22.307C22.7489 22.5515 22.5509 22.7495 22.3065 22.7501H3.6934C3.44895 22.7495 3.25091 22.5515 3.25035 22.307V17.3337C3.25035 16.4363 2.52284 15.7087 1.62542 15.7087C0.728 15.7087 0.000488281 16.4363 0.000488281 17.3337V22.307C0.0028749 24.3456 1.65487 25.9975 3.6934 25.9999H22.3064C24.345 25.9975 25.9969 24.3455 25.9993 22.307V17.3337C25.9994 16.4363 25.2719 15.7087 24.3744 15.7087Z"
+																fill="white"
+															/>
+														</g>
+														<defs>
+															<clipPath id="clip0_95_304">
+																<rect width="26" height="26" fill="white" />
+															</clipPath>
+														</defs>
+													</svg>
+													<span className="text-white text-xs">
+														{itemsFiltered.some(
+															(item) => item.type === 1 && isItemEditable(item, currentTemplateArea)
+														)
+															? T._('Upload another image', 'Composer')
+															: T._('Upload Images', 'Composer')}
+													</span>
+													<p className="text-xs mb-2 text-gray-300">(Max size: 2MB)</p>
+													<SupportedFormatsList>
+														<span className="text-white text-[10px]">
+															{T._('Supported file formats:', 'Composer') + ' ' + supportedFileFormats}
+														</span>
+													</SupportedFormatsList>
+												</button>
+											</>
+										)}
+									</>
+								)}
+							</div>
+
+							{/* Copyright Message */}
 							{copyrightMessage && copyrightMessage.visible && (
 								<CopyrightMessage>
 									<div dangerouslySetInnerHTML={{ __html: copyrightMessage.description }} />
 									{copyrightMessage && copyrightMessage.additionalData.enabled && (
 										<CopyrightMandatoryMessageContainer>
 											<CopyrightCheckbox
-												type='checkbox'
+												type="checkbox"
 												defaultChecked={copyrightMandatoryCheckbox}
 												onClick={() => {
 													setCopyrightMessageAccepted(!copyrightMandatoryCheckbox);
@@ -878,21 +944,25 @@ const Designer: FC<{ onCloseClick?: () => void, customizeTab?:string | null }> =
 							)}
 						</UploadButtons>
 					)}
+
+					{/* Move Elements Button */}
 					{itemsFiltered.length > 0 && !allStaticElements && (
-						<ReuseBtn  onClick={() => setMoveElements(true)}>
+						<ReuseBtn onClick={() => setMoveElements(true)}>
 							<Icon>
 								<Arrows />
 							</Icon>
-							<span>{T._('Move elements', 'Composer')} </span>
+							<span>{T._('Move elements', 'Composer')}</span>
 						</ReuseBtn>
 					)}
+
+					{/* Items List */}
 					<div className="pt-5">
 						{itemsFiltered.length === 0 && !(showAddTextButton || showUploadButton || showGalleryButton) && (
 							<Center>{T._('No customizable items', 'Composer')}</Center>
 						)}
 
 						{itemsFiltered.map((item) => {
-							if (item.type === 0 && isItemEditable(item, currentTemplateArea) && customizeTab === "text")
+							if (item.type === 0 && isItemEditable(item, currentTemplateArea) && customizeTab === 'text')
 								return (
 									<>
 										<ItemText
@@ -904,16 +974,19 @@ const Designer: FC<{ onCloseClick?: () => void, customizeTab?:string | null }> =
 											<span>
 												{T._(
 													'Characters not supported: ' +
-													removedUnsupportedCharactersFromTextMap[item.guid].join(','),
+														removedUnsupportedCharactersFromTextMap[item.guid].join(','),
 													'Composer'
 												)}
 											</span>
 										)}
 									</>
 								);
-							else if (item.type === 1 && isItemEditable(item, currentTemplateArea) && (customizeTab === "upload" || customizeTab === "gallery"))
+							else if (
+								item.type === 1 &&
+								isItemEditable(item, currentTemplateArea) &&
+								(customizeTab === 'upload' || customizeTab === 'gallery')
+							)
 								return (
-
 									<ItemImage
 										uploadImgDisabled={
 											copyrightMessage && copyrightMessage.additionalData.enabled
@@ -930,11 +1003,14 @@ const Designer: FC<{ onCloseClick?: () => void, customizeTab?:string | null }> =
 							return null;
 						})}
 					</div>
+
 					{isMobile && <CloseEditorButton onClick={onCloseClick}>{T._('OK', 'Composer')}</CloseEditorButton>}
 				</DesignerContainer>
 			)}
+
+			{/* Move Elements Mode */}
 			{moveElements && (
-				<ZakekeDesignerContainer $isMobile={isMobile} className='zakeke-container'>
+				<ZakekeDesignerContainer $isMobile={isMobile} className="zakeke-container">
 					<ZakekeDesigner ref={customizerRef} areaId={actualAreaId} />
 					<IconsAndDesignerContainer>
 						<ZoomIconIn hoverable onClick={() => customizerRef.current.zoomIn()}>
@@ -945,7 +1021,7 @@ const Designer: FC<{ onCloseClick?: () => void, customizeTab?:string | null }> =
 						</ZoomIconOut>
 					</IconsAndDesignerContainer>
 					<Button isFullWidth primary onClick={() => setMoveElements(false)}>
-						<span>{T._('OK', 'Composer')} </span>
+						<span>{T._('OK', 'Composer')}</span>
 					</Button>
 				</ZakekeDesignerContainer>
 			)}

@@ -225,16 +225,16 @@ const Viewer3D = () => {
     backdrop-blur-md"
 				>
 		  {sellerSettings?.canUndoRedo && (
-			<div className="flex cursor-pointer items-center gap-2">
-			  <UndoIcon $isMobile={isMobile} key={'undo'} hoverable onClick={handleUndoClick}>
+			<div onClick={handleUndoClick} className="flex cursor-pointer items-center gap-2">
+			  <UndoIcon $isMobile={isMobile} key={'undo'} hoverable >
 				<UndoSolid />
 			  </UndoIcon>
 			  <p className='text-base md:block hidden'>Undo</p>
 			</div>
 		)}
 		{sellerSettings?.canUndoRedo && (
-			<div className="flex cursor-pointer items-center gap-2">
-              <RedoIcon $isMobile={isMobile} key={'redo'} hoverable onClick={handleRedoClick}>
+			<div onClick={handleRedoClick} className="flex cursor-pointer items-center gap-2">
+              <RedoIcon $isMobile={isMobile} key={'redo'} hoverable>
 				<RedoSolid />
 			  </RedoIcon>
 			  <p className='text-base md:block hidden'>Redo</p>
