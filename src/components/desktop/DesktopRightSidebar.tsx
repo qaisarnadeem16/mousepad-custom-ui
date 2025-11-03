@@ -1,4 +1,4 @@
-import { Attribute, Step, ThemeTemplateGroup } from '@zakeke/zakeke-configurator-react';
+import { Attribute, Step, Option, ThemeTemplateGroup } from '@zakeke/zakeke-configurator-react';
 import { ReactComponent as AngleLeftSolid } from '../../assets/icons/angle-left-solid.svg';
 import { ReactComponent as AngleRightSolid } from '../../assets/icons/angle-right-solid.svg';
 import textIcon from '../../assets/icons/font-solid.svg';
@@ -70,7 +70,7 @@ const SliderArrow = styled<React.FC<React.ComponentProps<typeof Icon> & { arrowD
 // This is the right sidebar component for the desktop layout
 // that contains the list of groups, steps, attributes and options.
 const DesktopRightSidebar = () => {
-	const { isSceneLoading, templates, currentTemplate, setCamera, setTemplate, draftCompositions } = useZakeke();
+	const { isSceneLoading, templates, currentTemplate, setCamera, setTemplate, draftCompositions, selectOption } = useZakeke();
 
 	const {
 		setSelectedGroupId,
@@ -89,6 +89,7 @@ const DesktopRightSidebar = () => {
 	const [selectedCarouselSlide, setSelectedCarouselSlide] = useState<number>(0);
 	const [attributesOpened, setAttributesOpened] = useState<Map<number, boolean>>(Map());
 	const [isStartRegistering, setIsStartRegistering] = useState(false);
+	const [customizeTab, setCustomizeTab] = useState(null as string | null);
 
 	const [lastSelectedSteps, setLastSelectedSteps] = useState(Map<number, number>());
 	const [lastSelectedItemsFromGroups, setLastSelectedItemsFromGroups] = useState(Map<number, [number, string]>());
@@ -104,8 +105,8 @@ const DesktopRightSidebar = () => {
 	const currentTemplateGroups = selectedStep
 		? selectedStep.templateGroups
 		: selectedGroup
-		? selectedGroup.templateGroups
-		: [];
+			? selectedGroup.templateGroups
+			: [];
 
 	const currentItems = [...currentAttributes, ...currentTemplateGroups].sort(
 		(a, b) => a.displayOrder - b.displayOrder
@@ -228,6 +229,16 @@ const DesktopRightSidebar = () => {
 			]);
 			setLastSelectedItemsFromGroups(newLastAttributeSelected);
 		}
+		console.log('selectedAttribute', selectedAttribute)
+		// ✅ Find the new selected attribute right away (not from state)
+		const newSelectedAttribute =
+			selectedStep?.attributes.find((attr) => attr.id === attributeId) ||
+			selectedGroup?.attributes.find((attr) => attr.id === attributeId);
+
+		if (newSelectedAttribute && newSelectedAttribute.options.length > 0) {
+			handleOptionSelection(newSelectedAttribute.options[0]);
+		}
+
 		setLastSelectedItem({ type: 'attribute', id: attributeId });
 	};
 
@@ -419,6 +430,23 @@ const DesktopRightSidebar = () => {
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isStartRegistering]);
+
+
+	const selectedOptionId: number | null = selectedAttribute?.options.find((opt) => opt.selected)?.id ?? null;
+
+	const handleOptionSelection = (option: Option) => {
+		const undo = undoRegistering.startRegistering();
+		undoRedoActions.eraseRedoStack();
+		undoRedoActions.fillUndoStack({ type: 'option', id: selectedOptionId, direction: 'undo' });
+		undoRedoActions.fillUndoStack({ type: 'option', id: option.id, direction: 'redo' });
+
+		selectOption(option.id);
+		undoRegistering.endRegistering(undo);
+
+		try {
+			if ((window as any).algho) (window as any).algho.sendUserStopForm(true);
+		} catch (e) { }
+	};
 	console.log(actualGroups)
 	return (
 		<DesktopRightSidebarContainer>
@@ -445,8 +473,8 @@ const DesktopRightSidebar = () => {
 												: star
 										}
 									/> */}
-									{/* <span>{group.name ? T._d(group.name) : T._('Customize', 'Composer')}</span> */}
-								{/* </GroupItem>
+				{/* <span>{group.name ? T._d(group.name) : T._('Customize', 'Composer')}</span> */}
+				{/* </GroupItem>
 							);
 						else return null;
 					})} */}
@@ -467,11 +495,13 @@ const DesktopRightSidebar = () => {
 							return staticGroups.map((staticGroup) => (
 								<GroupItem
 									key={staticGroup.id}
-									// className={
-									// 	'group-item' +
-									// 	(selectedGroupId === -2 && selectedSubGroup === staticGroup.id ? ' selected' : '')
-									// }
-									// onClick={() => handleGroupSelection(-2, staticGroup.id)} 
+									onClick={() => { handleGroupSelection(-2); setCustomizeTab(staticGroup.id) }}
+
+								className={
+									'group-item' +
+									(selectedGroupId === -2 && customizeTab === staticGroup.id ? ' selected' : '')
+								}
+								// onClick={() => handleGroupSelection(-2, staticGroup.id)} 
 								>
 									<GroupIcon src={staticGroup.icon} alt={staticGroup.name} />
 								</GroupItem>
@@ -503,27 +533,27 @@ const DesktopRightSidebar = () => {
 
 			</GroupsContainer>
 			<AttributesContainer key={selectedAttributeId}>
-				<div className="border-2 border-[#6633FF]  max-h-[80vh] overflow-y-auto  rounded-3xl">
-				{/* Steps */}
-				{selectedGroup && selectedGroupId !== -2 && selectedGroup.steps && selectedGroup.steps.length > 0 && (
-					<Steps
-						key={'steps-' + selectedGroupId}
-						hasNextGroup={groupIndex !== actualGroups.length - 1}
-						hasPreviousGroup={groupIndex !== 0}
-						onNextStep={handleNextStep}
-						onPreviousStep={handlePreviousStep}
-						currentStep={selectedStep}
-						steps={selectedGroup.steps}
-						onStepChange={handleStepChange}
-					/>
-				)}
+				<div className="border-2 border-[#6633FF]  min-h-full overflow-y-auto  rounded-3xl">
+					{/* Steps */}
+					{selectedGroup && selectedGroupId !== -2 && selectedGroup.steps && selectedGroup.steps.length > 0 && (
+						<Steps
+							key={'steps-' + selectedGroupId}
+							hasNextGroup={groupIndex !== actualGroups.length - 1}
+							hasPreviousGroup={groupIndex !== 0}
+							onNextStep={handleNextStep}
+							onPreviousStep={handlePreviousStep}
+							currentStep={selectedStep}
+							steps={selectedGroup.steps}
+							onStepChange={handleStepChange}
+						/>
+					)}
 
-				{selectedGroupId && selectedGroupId !== -2 && selectedGroupId !== -3 && (
-					<>
-						{/* Attributes */}
-						{selectedGroup?.direction === 0 && (
-							<>
-								{/* <CarouselContainer
+					{selectedGroupId && selectedGroupId !== -2 && selectedGroupId !== -3 && (
+						<>
+							{/* Attributes */}
+							{selectedGroup?.direction === 0 && (
+								<>
+									{/* <CarouselContainer
 									key={selectedGroupId}
 									slidesToShow={window.innerWidth <= 1600 ? 3 : 4}
 									slideIndex={selectedCarouselSlide}
@@ -581,143 +611,95 @@ const DesktopRightSidebar = () => {
 													</ItemContainer>
 												);
 										})} */}
-										{currentItems && (
-											<div className="grid grid-cols-2 justify-center w-full ">
-												{currentItems.map((item ,i) => {
-													const isSelected =
-														!(item instanceof ThemeTemplateGroup)
-															? item.id === lastSelectedItem?.id
-															: item.templateGroupID === lastSelectedItem?.id;
+									{currentItems && (
+										<div className="grid grid-cols-2 justify-center w-full ">
+											{currentItems.map((item, i) => {
+												const isSelected =
+													!(item instanceof ThemeTemplateGroup)
+														? item.id === lastSelectedItem?.id
+														: item.templateGroupID === lastSelectedItem?.id;
 
-													const handleClick = () => {
-														if (item instanceof ThemeTemplateGroup)
-															handleTemplateGroupSelection(item.templateGroupID);
-														else handleAttributeSelection(item.id);
-													};
+												const handleClick = () => {
+													if (item instanceof ThemeTemplateGroup)
+														handleTemplateGroupSelection(item.templateGroupID);
+													else handleAttributeSelection(item.id);
+												};
 
-													return (
-														<div
-															key={i}
-															onClick={handleClick}
-															className={`cursor-pointer p-1 text-center  transition-all duration-300 ${isSelected
-																? "bg-[#6633FF80] text-white border border-[#3f22c6]"
-																: "bg-[#3A3D56] text-gray-300 hover:bg-white/20"
-																}`}
-														>
-															<div className="font-medium text-xs uppercase">
-																{T._d(item.name)}
-															</div>
-
-															{/* Show selected option name (if available) */}
-															{!(item instanceof ThemeTemplateGroup) && (
-																<div className="text-xs opacity-80 mt-0.5">
-																	{item.options.find((opt) => opt.selected)
-																		? T._d(item.options.find((opt) => opt.selected)!.name)
-																		: ""}
-																</div>
-															)}
-														</div>
-													);
-												})}
-											</div>
-										)}
-
-								{/* </CarouselContainer> */}
-
-								{lastSelectedItem?.type === 'attribute' ? (
-									<>
-										<OptionsContainer key={'options-container'}>
-											<Options key={'option'}>
-												{selectedAttribute &&
-													selectedAttribute.options
-														.filter((x) => x.enabled)
-														.map((option) => (
-															<OptionItem
-																key={option.guid}
-																selectedAttribute={selectedAttribute}
-																option={option}
-																hasDescriptionIcon={selectedAttribute.options.some(
-																	(x) => x.description
-																)}
-															/>
-														))}
-											</Options>
-										</OptionsContainer>
-										<AttributeDescription>
-											{T._d(selectedAttribute?.description ?? '')}
-										</AttributeDescription>
-									</>
-								) : (
-									<TemplateGroup
-										key={selectedTemplateGroupId}
-										templateGroup={selectedTemplateGroup!}
-									/>
-								)}
-							</>
-						)}
-
-						{selectedGroup?.direction === 1 && (
-							<>
-								{currentItems &&
-									currentItems.map((item) => {
-										if (!(item instanceof ThemeTemplateGroup))
-											return (
-												<ItemAccordionContainer key={'container' + item.code}>
-													<ItemAccordion
-														key={item.guid}
-														opened={attributesOpened.get(item.id)}
-														onClick={
-															selectedGroup.attributesAlwaysOpened
-																? () => null
-																: () => handleAttributeSelection(item.id, true)
-														}
+												return (
+													<div
+														key={i}
+														onClick={handleClick}
+														className={`cursor-pointer p-1 text-center  transition-all duration-300 ${isSelected
+															? "bg-[#6633FF80] text-white border border-[#3f22c6]"
+															: "bg-[#3A3D56] text-gray-300 hover:bg-white/20"
+															}`}
 													>
-														<ItemAccordionName>{T._d(item.name)}</ItemAccordionName>
+														<div className="font-medium text-xs uppercase">
+															{T._d(item.name)}
+														</div>
 
-														{!selectedGroup.attributesAlwaysOpened && (
-															<ArrowIcon
-																key={'accordion-icon'}
-																src={
-																	attributesOpened.get(item.id) ? arrowUp : arrowDown
-																}
-															/>
+														{/* Show selected option name (if available) */}
+														{!(item instanceof ThemeTemplateGroup) && (
+															<div className="text-xs opacity-80 mt-0.5">
+																{item.options.find((opt) => opt.selected)
+																	? T._d(item.options.find((opt) => opt.selected)!.name)
+																	: ""}
+															</div>
 														)}
-													</ItemAccordion>
-													{item.description !== '' && (
-														<ItemAccordionDescription>
-															{T._d(item.description)}
-														</ItemAccordionDescription>
-													)}
+													</div>
+												);
+											})}
+										</div>
+									)}
 
-													{attributesOpened.get(item.id) && (
-														<OptionsContainer>
-															<Options>
-																{item.options
-																	.filter((x) => x.enabled)
-																	.map((option) => (
-																		<OptionItem
-																			key={option.guid}
-																			selectedAttribute={selectedAttribute}
-																			option={option}
-																			hasDescriptionIcon={item.options.some(
-																				(x) => x.description
-																			)}
-																		/>
-																	))}
-															</Options>
-														</OptionsContainer>
-													)}
-												</ItemAccordionContainer>
-											);
-										else
-											return (
-												<>
-													<ItemAccordionContainer key={'container' + item.templateGroupID}>
+									{/* </CarouselContainer> */}
+
+									{lastSelectedItem?.type === 'attribute' ? (
+										<>
+											<OptionsContainer key={'options-container'}>
+												<Options key={'option'}>
+													{selectedAttribute &&
+														selectedAttribute.options
+															.filter((x) => x.enabled)
+															.map((option) => (
+																<OptionItem
+																	key={option.guid}
+																	selectedAttribute={selectedAttribute}
+																	option={option}
+																	hasDescriptionIcon={selectedAttribute.options.some(
+																		(x) => x.description
+																	)}
+																/>
+															))}
+												</Options>
+											</OptionsContainer>
+											<AttributeDescription>
+												{T._d(selectedAttribute?.description ?? '')}
+											</AttributeDescription>
+										</>
+									) : (
+										<TemplateGroup
+											key={selectedTemplateGroupId}
+											templateGroup={selectedTemplateGroup!}
+										/>
+									)}
+								</>
+							)}
+
+							{selectedGroup?.direction === 1 && (
+								<>
+									{currentItems &&
+										currentItems.map((item) => {
+											if (!(item instanceof ThemeTemplateGroup))
+												return (
+													<ItemAccordionContainer key={'container' + item.code}>
 														<ItemAccordion
-															key={item.templateGroupID + 'accordion'}
-															opened={attributesOpened.get(item.templateGroupID)}
-															onClick={() =>
-																handleTemplateGroupSelection(item.templateGroupID, true)
+															key={item.guid}
+															opened={attributesOpened.get(item.id)}
+															onClick={
+																selectedGroup.attributesAlwaysOpened
+																	? () => null
+																	: () => handleAttributeSelection(item.id, true)
 															}
 														>
 															<ItemAccordionName>{T._d(item.name)}</ItemAccordionName>
@@ -726,34 +708,82 @@ const DesktopRightSidebar = () => {
 																<ArrowIcon
 																	key={'accordion-icon'}
 																	src={
-																		attributesOpened.get(item.templateGroupID)
-																			? arrowUp
-																			: arrowDown
+																		attributesOpened.get(item.id) ? arrowUp : arrowDown
 																	}
 																/>
 															)}
 														</ItemAccordion>
+														{item.description !== '' && (
+															<ItemAccordionDescription>
+																{T._d(item.description)}
+															</ItemAccordionDescription>
+														)}
 
-														{attributesOpened.get(item.templateGroupID) && (
-															<TemplateGroup
-																key={selectedTemplateGroupId + 'vertical'}
-																templateGroup={selectedTemplateGroup!}
-															/>
+														{attributesOpened.get(item.id) && (
+															<OptionsContainer>
+																<Options>
+																	{item.options
+																		.filter((x) => x.enabled)
+																		.map((option) => (
+																			<OptionItem
+																				key={option.guid}
+																				selectedAttribute={selectedAttribute}
+																				option={option}
+																				hasDescriptionIcon={item.options.some(
+																					(x) => x.description
+																				)}
+																			/>
+																		))}
+																</Options>
+															</OptionsContainer>
 														)}
 													</ItemAccordionContainer>
-												</>
-											);
-									})}
-							</>
-						)}
-					</>
-				)}
+												);
+											else
+												return (
+													<>
+														<ItemAccordionContainer key={'container' + item.templateGroupID}>
+															<ItemAccordion
+																key={item.templateGroupID + 'accordion'}
+																opened={attributesOpened.get(item.templateGroupID)}
+																onClick={() =>
+																	handleTemplateGroupSelection(item.templateGroupID, true)
+																}
+															>
+																<ItemAccordionName>{T._d(item.name)}</ItemAccordionName>
 
-				{/* Designer / Customizer */}
-				{selectedGroupId === -2 && <Designer />}
+																{!selectedGroup.attributesAlwaysOpened && (
+																	<ArrowIcon
+																		key={'accordion-icon'}
+																		src={
+																			attributesOpened.get(item.templateGroupID)
+																				? arrowUp
+																				: arrowDown
+																		}
+																	/>
+																)}
+															</ItemAccordion>
 
-				{/* Saved Compositions */}
-				{draftCompositions && selectedGroupId === -3 && <DesignsDraftList />}
+															{attributesOpened.get(item.templateGroupID) && (
+																<TemplateGroup
+																	key={selectedTemplateGroupId + 'vertical'}
+																	templateGroup={selectedTemplateGroup!}
+																/>
+															)}
+														</ItemAccordionContainer>
+													</>
+												);
+										})}
+								</>
+							)}
+						</>
+					)}
+
+					{/* Designer / Customizer */}
+					{selectedGroupId === -2 && <Designer customizeTab={customizeTab}/>}
+
+					{/* Saved Compositions */}
+					{draftCompositions && selectedGroupId === -3 && <DesignsDraftList />}
 				</div>
 			</AttributesContainer>
 		</DesktopRightSidebarContainer>

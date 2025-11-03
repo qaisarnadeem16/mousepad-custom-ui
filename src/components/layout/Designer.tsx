@@ -1,5 +1,7 @@
 import {
+	ImageCategory,
 	ImageItem,
+	ImageMacroCategory,
 	Item,
 	ProductArea,
 	TemplateArea,
@@ -47,6 +49,7 @@ import {
 	ZoomInIcon,
 	ZoomOutIcon
 } from './SharedComponents';
+import ReuseBtn from 'components/widgets/ReuseBtn';
 
 export type PropChangeHandler = (
 	item: EditTextItem | EditImageItem,
@@ -76,7 +79,8 @@ const DesignerContainer = styled.div<{ $isMobile?: boolean }>`
 	flex-flow: column;
 	user-select: none;
 	width: 100%;
-	padding: 30px 30px 70px 30px;
+	padding: 0px 20px;
+	/* padding: 30px 30px 70px 30px; */
 	${(props) =>
 		props.$isMobile &&
 		`
@@ -162,7 +166,7 @@ const CopyrightCheckbox = styled.input`
 
 const CopyrightMandatoryMessage = styled.div``;
 
-const Designer: FC<{ onCloseClick?: () => void }> = ({ onCloseClick }) => {
+const Designer: FC<{ onCloseClick?: () => void, customizeTab?:string | null }> = ({ onCloseClick, customizeTab }) => {
 	const { showDialog, closeDialog } = useDialogManager();
 	const [forceUpdate, setForceUpdate] = useState(false);
 	const { setIsLoading, isMobile, setUnsupportedCharactersFromText, removedUnsupportedCharactersFromTextMap } =
@@ -349,6 +353,28 @@ const Designer: FC<{ onCloseClick?: () => void }> = ({ onCloseClick }) => {
 			/>
 		);
 	};
+	const handleAddClipArt = async (image: Image) => {
+	
+
+		setSelectedImageIds((prev) => {
+			if (prev.includes(image.imageID)) {
+				return prev.filter((id) => id !== image.imageID);
+			} else {
+				return [...prev, image.imageID];
+			}
+		});
+
+		setActiveButton('pattern');
+		closeDialog('add-image');
+
+		try {
+			const guid = await addItemImage(image.imageID, actualAreaId);
+			if (!guid) return;
+			
+		} catch (error) {
+			console.error('Error adding and configuring clipart:', error);
+		}
+	};
 
 	const handleUploadImageClick = async () => {
 		if (currentTemplate && actualAreaId) {
@@ -479,6 +505,109 @@ const Designer: FC<{ onCloseClick?: () => void }> = ({ onCloseClick }) => {
 		}
 	};
 
+
+	interface Image {
+		imageID: number;
+		name: string;
+		choiceUrl: string;
+		preferredWidth: number | null;
+		preferredHeight: number | null;
+	}
+
+	const { getMacroCategories, getImages } = useZakeke();
+	const [isLoading, setIsloading] = useState(false);
+	const [isClipArt, setClipArt] = useState(false);
+	const [isDesign, setDesign] = useState(false);
+	const [macroCategories, setMacroCategories] = useState<ImageMacroCategory[]>([]);
+	const [selectedMacroCategory, setSelectedMacroCategory] = useState<ImageMacroCategory | null>(
+		null
+	);
+	const [selectedCategory, setSelectedCategory] = useState<ImageCategory | null>();
+	const [images, setImages] = useState<Image[]>();
+	const [selectedImageIds, setSelectedImageIds] = useState<number[]>([]);
+	const [activeButton, setActiveButton] = useState<string | null>(null);
+	const [categories, setCategories] = useState<ImageCategory[]>([]);
+
+	const removeItemsInArea = (areaId: number, areaName: string, typeToRemove: 'Text' | 'Image') => {
+		const allowedAreas = ['Front Waistband', 'Back Waistband'];
+		if (!allowedAreas.includes(areaName)) return;
+
+		items
+			.filter((item) => item.areaId === areaId)
+			.forEach((item) => {
+				if (
+					(typeToRemove === 'Text' && item.type === 0) ||
+					(typeToRemove === 'Image' && item.type === 1)
+				) {
+					removeItem(item.guid);
+				}
+			});
+	};
+	useEffect(() => {
+		setSelectedImageIds([]);
+		setActiveButton(null);
+	}, [actualAreaId]);
+
+	useEffect(() => {
+		const fetchCategories = async () => {
+			try {
+				// setIsLoading(true);
+				const macroCategories = await getMacroCategories();
+				const allCategories = macroCategories.flatMap((macro) => macro.categories);
+				setCategories(
+					allCategories.filter(
+						(cat: { name: string }) =>
+							!['gray print areas', 'print area'].includes(cat.name.trim().toLowerCase())
+					)
+				);
+
+				setIsLoading(false);
+
+				if (allCategories.length > 0) {
+					handleCategoryClick(allCategories[2]);
+				}
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		fetchCategories();
+	}, []);
+
+	const updateCategories = async () => {
+		try {
+			setIsloading(true);
+			let macroCategories = await getMacroCategories();
+			setIsloading(false);
+			setMacroCategories(macroCategories);
+			handleMacroCategoryClick(macroCategories[0]);
+		} catch (ex) {
+			console.error(ex);
+		}
+	};
+
+	const handleMacroCategoryClick = async (macroCategory: ImageMacroCategory) => {
+		setSelectedMacroCategory(macroCategory);
+		setCategories(
+			macroCategory.categories.filter((cat: { name: string }) => cat.name !== 'Gray print areas ')
+		);
+
+		console.log(categories);
+
+		handleCategoryClick(macroCategory.categories[0]);
+	};
+	const handleCategoryClick = async (category: ImageCategory) => {
+		try {
+			setSelectedImageIds([]);
+			setSelectedCategory(category);
+			// setIsLoading(true);
+			const images = await getImages(category.categoryID!);
+			setImages(images);
+			setIsLoading(false);
+		} catch (ex) {
+			console.error(ex);
+		}
+	};
 	return (
 		<>
 			{!moveElements && (
@@ -596,71 +725,69 @@ const Designer: FC<{ onCloseClick?: () => void }> = ({ onCloseClick }) => {
 						</SelectContainer>
 					)}
 
-					{itemsFiltered.length === 0 && !(showAddTextButton || showUploadButton || showGalleryButton) && (
-						<Center>{T._('No customizable items', 'Composer')}</Center>
-					)}
-
-					{itemsFiltered.map((item) => {
-						if (item.type === 0 && isItemEditable(item, currentTemplateArea))
-							return (
-								<>
-									<ItemText
-										key={item.guid}
-										handleItemPropChange={handleItemPropChange}
-										item={item as TextItem}
-									/>
-									{removedUnsupportedCharactersFromTextMap[item.guid] && (
-										<span>
-											{T._(
-												'Characters not supported: ' +
-													removedUnsupportedCharactersFromTextMap[item.guid].join(','),
-												'Composer'
-											)}
-										</span>
-									)}
-								</>
-							);
-						else if (item.type === 1 && isItemEditable(item, currentTemplateArea))
-							return (
-								<ItemImage
-									uploadImgDisabled={
-										copyrightMessage && copyrightMessage.additionalData.enabled
-											? !copyrightMandatoryCheckbox
-											: false
-									}
-									key={item.guid}
-									handleItemPropChange={handleItemPropChange}
-									item={item as ImageItem}
-									currentTemplateArea={currentTemplateArea!}
-								/>
-							);
-
-						return null;
-					})}
+				
 
 					{(showAddTextButton || showUploadButton || showGalleryButton) && (
 						<UploadButtons>
-							{showAddTextButton && (
-								<Button isFullWidth onClick={handleAddTextClick}>
+							{showAddTextButton && customizeTab === "text" &&(
+								<ReuseBtn  onClick={handleAddTextClick}>
 									<Icon>
 										<Add />
 									</Icon>
 									<span>{T._('Add text', 'Composer')}</span>
-								</Button>
+								</ReuseBtn>
 							)}
 
-							{showGalleryButton && (
-								<Button isFullWidth onClick={handleAddImageFromGalleryClick}>
+							{showGalleryButton && customizeTab === "gallery" && (
+								<ReuseBtn  onClick={handleAddImageFromGalleryClick}>
 									<Icon>
 										<Add />
 									</Icon>
 									<span>{T._('Add clipart', 'Composer')}</span>
-								</Button>
+								</ReuseBtn>
 							)}
 
-							{showUploadButton && (
+							{showUploadButton && customizeTab === "upload" && (
 								<>
-									<Button
+									<button 
+										disabled={
+											copyrightMessage && copyrightMessage.additionalData.enabled
+												? !copyrightMandatoryCheckbox
+												: false
+										}
+										
+										onClick={handleUploadImageClick}
+									className="flex flex-col gap-1 items-center justify-center rounded-md border border-[#6633FFC7] w-full p-2 text-center text-white shadow-md transition hover:shadow-lg hover:border-[#8F6FFF]">
+										<svg width="26" height="26" viewBox="0 0 26 26" fill="none" >
+											<g clip-path="url(#clip0_95_304)">
+												<path d="M8.40712 7.20499L11.4197 4.1913L11.4425 18.9587C11.4425 19.8561 12.17 20.5836 13.0674 20.5836C13.9648 20.5836 14.6924 19.8561 14.6924 18.9587L14.6696 4.20974L17.6649 7.20504C18.2884 7.85054 19.3171 7.86842 19.9626 7.24495C20.6081 6.62149 20.6259 5.5928 20.0025 4.9473C19.9894 4.93374 19.9761 4.92044 19.9626 4.90739L16.483 1.42786C14.5793 -0.475903 11.4928 -0.475903 9.58901 1.4278L9.58896 1.42786L6.10947 4.90734C5.48601 5.55284 5.50388 6.58152 6.14939 7.20499C6.7791 7.81317 7.77741 7.81317 8.40712 7.20499Z" fill="white" />
+												<path d="M24.3744 15.7087C23.477 15.7087 22.7495 16.4363 22.7495 17.3337V22.307C22.7489 22.5515 22.5509 22.7495 22.3065 22.7501H3.6934C3.44895 22.7495 3.25091 22.5515 3.25035 22.307V17.3337C3.25035 16.4363 2.52284 15.7087 1.62542 15.7087C0.728 15.7087 0.000488281 16.4363 0.000488281 17.3337V22.307C0.0028749 24.3456 1.65487 25.9975 3.6934 25.9999H22.3064C24.345 25.9975 25.9969 24.3455 25.9993 22.307V17.3337C25.9994 16.4363 25.2719 15.7087 24.3744 15.7087Z" fill="white" />
+											</g>
+											<defs>
+												<clipPath id="clip0_95_304">
+													<rect width="26" height="26" fill="white" />
+												</clipPath>
+											</defs>
+										</svg>
+										<span className=" text-white text-xs">
+
+										{itemsFiltered.some(
+											(item) =>
+												item.type === 1 && isItemEditable(item, currentTemplateArea)
+										)
+											? T._('Upload another image', 'Composer')
+											: T._('Upload Images', 'Composer')}{' '}
+											</span>
+
+										<p className="text-xs mb-2 text-gray-300">(Max size: 2MB)</p>
+
+											<SupportedFormatsList>
+												<span className=" text-white text-[10px]">
+													{T._('Supported file formats:', 'Composer') + ' ' + supportedFileFormats}
+												</span>
+											</SupportedFormatsList>
+									</button>
+									{/* <Button
 										disabled={
 											copyrightMessage && copyrightMessage.additionalData.enabled
 												? !copyrightMandatoryCheckbox
@@ -682,12 +809,50 @@ const Designer: FC<{ onCloseClick?: () => void }> = ({ onCloseClick }) => {
 													: T._('Upload Images', 'Composer')}{' '}
 											</span>
 										</span>
-									</Button>
+									</Button> */}
 								</>
 							)}
-							<SupportedFormatsList>
-								{T._('Supported file formats:', 'Composer') + ' ' + supportedFileFormats}
-							</SupportedFormatsList>
+							
+							{images &&  customizeTab === "gallery" &&  (
+							<div className="">
+										<div className="">
+										<span className="badges-header">
+
+										</span>
+										<div className="badges-select-wrapper">
+											<select
+												className="badges-select"
+												value={selectedCategory?.categoryID?.toString() ?? ''}
+												onChange={(e) => {
+													const selectedId = Number(e.target.value);
+													const cat = categories.find((c) => c.categoryID === selectedId);
+													if (cat) handleCategoryClick(cat);
+												}}
+											>
+												{categories?.map((cat) => (
+													<option key={cat.categoryID} value={cat.categoryID?.toString()}>
+														{cat.name}
+													</option>
+												))}
+											</select>
+										</div>
+									</div>
+									{isLoading ? (
+										<p>Loading...</p>
+									) : (
+										<div className=' flex flex-wrap'>
+											{images.map((image) => (
+												<div
+													// isActive={selectedImageIds.includes(image.imageID)}
+													key={image.imageID.toString()}
+													onClick={() => handleAddClipArt(image)}
+												>
+													<img src={image.choiceUrl} alt={image.name} />
+												</div>
+											))}
+										</div>
+									)}
+							</div>)}
 
 							{copyrightMessage && copyrightMessage.visible && (
 								<CopyrightMessage>
@@ -714,13 +879,57 @@ const Designer: FC<{ onCloseClick?: () => void }> = ({ onCloseClick }) => {
 						</UploadButtons>
 					)}
 					{itemsFiltered.length > 0 && !allStaticElements && (
-						<MoveElementButton isFullWidth outline onClick={() => setMoveElements(true)}>
+						<ReuseBtn  onClick={() => setMoveElements(true)}>
 							<Icon>
 								<Arrows />
 							</Icon>
 							<span>{T._('Move elements', 'Composer')} </span>
-						</MoveElementButton>
+						</ReuseBtn>
 					)}
+					<div className="pt-5">
+						{itemsFiltered.length === 0 && !(showAddTextButton || showUploadButton || showGalleryButton) && (
+							<Center>{T._('No customizable items', 'Composer')}</Center>
+						)}
+
+						{itemsFiltered.map((item) => {
+							if (item.type === 0 && isItemEditable(item, currentTemplateArea) && customizeTab === "text")
+								return (
+									<>
+										<ItemText
+											key={item.guid}
+											handleItemPropChange={handleItemPropChange}
+											item={item as TextItem}
+										/>
+										{removedUnsupportedCharactersFromTextMap[item.guid] && (
+											<span>
+												{T._(
+													'Characters not supported: ' +
+													removedUnsupportedCharactersFromTextMap[item.guid].join(','),
+													'Composer'
+												)}
+											</span>
+										)}
+									</>
+								);
+							else if (item.type === 1 && isItemEditable(item, currentTemplateArea) && (customizeTab === "upload" || customizeTab === "gallery"))
+								return (
+
+									<ItemImage
+										uploadImgDisabled={
+											copyrightMessage && copyrightMessage.additionalData.enabled
+												? !copyrightMandatoryCheckbox
+												: false
+										}
+										key={item.guid}
+										handleItemPropChange={handleItemPropChange}
+										item={item as ImageItem}
+										currentTemplateArea={currentTemplateArea!}
+									/>
+								);
+
+							return null;
+						})}
+					</div>
 					{isMobile && <CloseEditorButton onClick={onCloseClick}>{T._('OK', 'Composer')}</CloseEditorButton>}
 				</DesignerContainer>
 			)}

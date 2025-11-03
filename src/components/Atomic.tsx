@@ -93,13 +93,13 @@ export const Button = styled.button<{
 	justify-content: center;
 	align-items: center;
 	min-width: ${(props) => (props.isFullWidth ? '100%' : 'unset')};
-	background-color: ${(props) => (props.primary ? '#313c46' : 'white')};
+	background-color: ${(props) => (props.primary ? '#6633FF' : 'white')};
 	color: ${(props) => (props.outline ? 'black' : props.primary ? 'white' : '#313c46')};
 	min-height: 38px;
 	padding: ${(props) => (props.outline ? '' : '5px 10px 5px 10px')};
 	text-align: center;
 	text-transform: ${(props) => (props.uppercase ? 'uppercase' : 'none')};
-	border: ${(props) => (props.outline ? '1px solid lightgray' : '1px solid #313c46')};
+	border: ${(props) => (props.outline ? '1px solid lightgray' : '1px solid #6633FF')};
 	cursor: ${(props) => (!props.disabled ? 'pointer' : 'auto')};
 
 	${(props) =>

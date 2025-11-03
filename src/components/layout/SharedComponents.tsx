@@ -88,7 +88,7 @@ export const AttributesContainer = styled.div`
 	/* background-color: white; */
 	color: white;
 	flex: 1;
-	padding:  20px 40px 10px 10px;
+	padding:  20px 20px 10px 0px;
 	min-height: 0;
 	overflow: auto;
 	display: flex;
@@ -428,11 +428,11 @@ export const Center = styled.div`
 `;
 
 export const SupportedFormatsList = styled.span`
-	font-size: 16px;
+	font-size: 1opx;
 	font-style: italic;
 	text-align: center;
 	color: #313c46;
-	padding-top: 5px;
+	/* padding-top: 5px; */
 `;
 
 export const ZakekeDesignerContainer = styled.div<{ $isMobile?: boolean }>`
@@ -441,7 +441,7 @@ export const ZakekeDesignerContainer = styled.div<{ $isMobile?: boolean }>`
 	position: relative;
 	display: flex;
 	flex-direction: column;
-	background: #ffffff;
+	background: #090B38;
 	${(props) =>
 		props.$isMobile &&
 		`
