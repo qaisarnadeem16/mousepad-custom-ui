@@ -12,6 +12,7 @@ const LoadingBackground = styled.div`
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	background: #090b38e6;
 	z-index: 12;
 `;
 

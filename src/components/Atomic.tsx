@@ -35,9 +35,10 @@ export const Icon = styled.div<{ hoverable?: boolean }>`
 export const TextArea = styled.textarea`
 	background-color: transparent;
 	padding: 10px 20px;
-	color: white;
+	color: #6633FF;
 	font-size: 14px;
 	border: 1px #6633FF solid;
+	border-radius: 10px;
 	width: 100%;
 	min-height: 100px;
 	font-family: 'Montserrat', sans-serif;
