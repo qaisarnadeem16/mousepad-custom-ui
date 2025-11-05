@@ -72,9 +72,9 @@ const TextToolsContainer = styled.div`
 `;
 
 const TextButtonsContainer = styled.div`
-	width: 50%;
+	width: 45%;
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns:1fr 1fr;
 	grid-gap: 5px;
 `;
 
@@ -87,7 +87,7 @@ const ColorsContainer = styled.div`
 	display: flex;
 	flex-direction: row;
 	padding-bottom: 20px;
-	border-bottom: 1px #ccc dotted;
+	// border-bottom: 1px #ccc dotted;
 `;
 
 const SinglePaletteItem = styled.div<{ color: string; selected: boolean }>`
@@ -263,13 +263,39 @@ const ItemText: FC<{
 									Option: FontOption,
 									SingleValue: FontSingleValue
 								}}
-								styles={{
-									container: (base) =>
-										({
-											...base,
-											width: 200
-										} as CSSObjectWithLabel)
-								}}
+								 styles={{
+                                     container: (base) => ({
+                                      ...base,
+                                      width: 130
+                                      }),
+                                     control: (base) => ({
+                                      ...base,
+                                      backgroundColor: 'transparent',
+                                      boxShadow: 'none',
+									  borderRadius:'8px',
+                                      borderColor: '#FFFFFF4D', // optional
+                                        '&:hover': {
+                                      borderColor: '#6a6a6a'
+                                        }
+                                      }),
+                                    singleValue: (base) => ({
+                                     ...base,
+                                     backgroundColor: 'transparent',
+                                     color: '#fff' // adjust if needed for contrast
+                                     }),
+                                    valueContainer: (base) => ({
+                                      ...base,
+                                      backgroundColor: 'transparent'
+                                    }),
+                                   input: (base) => ({
+                                 ...base,
+                               color: '#fff'
+                                  }),
+                                      placeholder: (base) => ({
+                                      ...base,
+                                      color: '#aaa'
+                                   })
+                                }}
 								isSearchable={false}
 								options={fonts}
 								isDisabled={fontLoading}
@@ -305,7 +331,9 @@ const ItemText: FC<{
 													onClick={() => handleItemPropChange(item, 'font-bold', !isBold)}
 												>
 													<Icon>
-														<BoldIcon />
+														<svg width="11" height="15" viewBox="0 0 11 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0H4.44C6.47 0 7.94 0.3 8.85 0.87C9.77 1.44 10.22 2.36 10.22 3.62C10.22 4.47 10.02 5.17 9.62 5.72C9.22 6.26 8.69 6.59 8.02 6.7V6.8C8.93 7 9.58 7.38 9.98 7.93C10.38 8.49 10.58 9.23 10.58 10.13C10.58 11.44 10.11 12.46 9.18 13.19C8.05573 13.9759 6.69938 14.3599 5.33 14.28H0V0ZM3.03 5.66H4.78C5.6 5.66 6.2 5.53 6.57 5.28C6.93 5.02 7.12 4.6 7.12 4.02C7.12 3.47 6.92 3.08 6.52 2.84C5.92747 2.56073 5.27362 2.43684 4.62 2.48H3.02V5.66H3.03ZM3.03 8.06V11.78H5C5.83 11.78 6.45 11.62 6.84 11.3C7.24 10.98 7.44 10.5 7.44 9.84C7.44 8.65 6.59 8.06 4.9 8.06H3.03Z" fill="white"/>
+                                                        </svg>
 													</Icon>
 												</Button>
 											)}
@@ -316,14 +344,16 @@ const ItemText: FC<{
 													onClick={() => handleItemPropChange(item, 'font-italic', !isItalic)}
 												>
 													<Icon>
-														<ItalicSolid />
+														<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                         <path fill-rule="evenodd" clip-rule="evenodd" d="M14.73 6.5L11.06 17.5H14L13.7 19H6L6.3 17.5H9.11L12.79 6.5H10L10.3 5H18L17.7 6.5H14.73Z" fill="white"/>
+                                                        </svg>
 													</Icon>
 												</Button>
 											)}
 										</Columns>
 									</FormControl>
 								)}
-							{(!constraints || constraints.canChangeTextPathMode) && textRestrictions.allowedCurved && (
+							{/* {(!constraints || constraints.canChangeTextPathMode) && textRestrictions.allowedCurved && (
 								<FormControl label={T._('Curved', 'Composer')}>
 									<Button
 										outline
@@ -335,7 +365,7 @@ const ItemText: FC<{
 										</Icon>
 									</Button>
 								</FormControl>
-							)}
+							)} */}
 						</TextButtonsContainer>
 					)}
 				</TextToolsContainer>

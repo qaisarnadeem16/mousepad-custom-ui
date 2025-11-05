@@ -22,7 +22,7 @@ export const FormControl: FC<{
 }> = ({ label, rightComponent, children }) => {
     return <FormControlContainer>
         <FormControlLabel>
-            <span>{label}</span>
+            <span className="text-white">{label}</span>
             {rightComponent}
         </FormControlLabel>
         {children}

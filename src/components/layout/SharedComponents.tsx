@@ -446,9 +446,10 @@ export const ZakekeDesignerContainer = styled.div<{ $isMobile?: boolean }>`
 	${(props) =>
 		props.$isMobile &&
 		`
-       position:fixed;
-        inset:0;
-        z-index:13;
+	   position:fixed;
+	   bottom:120px;
+	   height:30vh;
+       z-index:13;
     `}
 `;
 

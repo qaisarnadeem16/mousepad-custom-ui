@@ -14,7 +14,7 @@ function styles<
 		container: (base) =>
 			({
 				...base,
-				minWidth: 200,
+				minWidth: 150,
 				display: 'flex',
 				maxHeight: 'fit-content'
 			} as CSSObjectWithLabel),

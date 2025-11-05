@@ -11,16 +11,17 @@ import noImage from '../../assets/images/no_image.png';
 export const MobileItemContainer = styled.div<{ selected?: boolean }>`
 	align-items: center;
 	justify-content: center;
-	min-width: 125px;
-	max-width: 125px;
-	width: 125px;
-	height: 140px;
-	min-height: 140px;
-	max-height: 140px;
+	min-width: 115px;
+	max-width: 115px;
+	width: 115px;
+	height: 120px;
+	min-height: 120px;
+	max-height: 120px;
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	border-right: 2px #fff solid;
+	border-radius:8px;
+	border: ${(props) => (props.selected ? "1px #6633FF solid " : "1px #fff solid")};
 	position: relative;
 	background-color: #090B38;
 `;
@@ -30,7 +31,7 @@ export const MenuItemImage = styled.img<{ isRound?: boolean }>`
 	width: 64px;
 	height: 64px;
 	object-fit: ${(props) => (props.isRound ? 'cover' : 'contain')};
-	margin-bottom: 20px;
+	// margin-bottom: 20px;
 	border-radius: ${(props) => (props.isRound ? '64px!important' : '0')};
 `;
 
@@ -288,7 +289,7 @@ export const MenuItem: FC<MenuItemProps> = (props) => {
 					))}
 				</MenuItemImagesWrapper>
 			)}
-			{!props.hideLabel && <MenuItemLabel>{props.label}</MenuItemLabel>}
+			{/* {!props.hideLabel && <MenuItemLabel>{props.label}</MenuItemLabel>} */}
 		</MobileItemContainer>
 	);
 };

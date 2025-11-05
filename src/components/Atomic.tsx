@@ -10,8 +10,8 @@ export const CarouselContainer = styled(Carousel)`
 // Styled component for an icon
 export const Icon = styled.div<{ hoverable?: boolean }>`
 	display: inline-block;
-	width: 24px;
-	height: 24px;
+	width: 28px;
+	height: 28px;
 	cursor: pointer;
 
 	${(props) =>
@@ -34,13 +34,13 @@ export const Icon = styled.div<{ hoverable?: boolean }>`
 // Styled component for a textarea
 export const TextArea = styled.textarea`
 	background-color: transparent;
-	padding: 10px 20px;
+	padding: 10px 10px;
 	color: #6633FF;
 	font-size: 14px;
 	border: 1px #6633FF solid;
 	border-radius: 10px;
 	width: 100%;
-	min-height: 100px;
+	min-height: 40px;
 	font-family: 'Montserrat', sans-serif;
 	outline: none;
 	resize: none;
@@ -93,27 +93,29 @@ export const Button = styled.button<{
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	min-width: ${(props) => (props.isFullWidth ? '100%' : 'unset')};
-	background-color: ${(props) => (props.primary ? '#6633FF' : 'white')};
+	min-width: ${(props) => (props.isFullWidth ? '100%' : '50px')};
+	background-color: ${(props) => (props.primary ? '#6633FF' : 'transparent')};
 	color: ${(props) => (props.outline ? 'black' : props.primary ? 'white' : '#313c46')};
-	min-height: 38px;
+	min-height: 45px;
 	padding: ${(props) => (props.outline ? '' : '5px 10px 5px 10px')};
 	text-align: center;
+	border-radius:8px;
 	text-transform: ${(props) => (props.uppercase ? 'uppercase' : 'none')};
-	border: ${(props) => (props.outline ? '1px solid lightgray' : '1px solid #6633FF')};
+	border: ${(props) => (props.outline ? '1px #FFFFFF4D solid' : '1px #FFFFFF4D solid')};
 	cursor: ${(props) => (!props.disabled ? 'pointer' : 'auto')};
 
 	${(props) =>
 		props.selected &&
 		`
-    border: 1px solid black;
+    border: 1px #6633FF solid;
+	background-color:#6633FF;
   `}
 
 	${(props) =>
 		!props.disabled &&
 		`
       &:hover {
-        background-color: ${props.outline ? 'white' : props.primary ? '#4b6074' : '#313c46'};
+        background-color: ${props.outline ? 'blue' : props.primary ? '#4b6074' : '#313c46'};
         border: ${props.outline ? '1px solid black' : '1px solid #4b6074'};
         color: ${props.outline ? 'black' : 'white'};
       }
@@ -143,6 +145,7 @@ export const Button = styled.button<{
 export const Columns = styled.div<{ columns: number }>`
 	width: 100%;
 	display: grid;
+	gap:8px;
 	grid-template-columns: repeat(${(props) => props.columns}, 1fr);
 `;
 

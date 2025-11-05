@@ -81,25 +81,30 @@ const MoveElementButton = styled(Button)``;
 
 const DesignerContainer = styled.div<{ $isMobile?: boolean }>`
 	display: flex;
-	flex-flow: column;
-	user-select: none;
+	flex-direction: column;
 	width: 100%;
-	overflow: auto;
-	max-height: 72vh;
-	padding: 0px 20px;
+	flex: 1;
+	overflow-y: auto;
+	padding: 12px 16px;
+	user-select: none;
+	background: transparent;
+    max-height:72vh;
 	${(props) =>
 		props.$isMobile &&
 		`
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		z-index: 11;
-		background-color: #ffffff;
-		overflow-y: scroll;
+		max-height: calc(100vh - 160px); /* Adjust dynamically for header/footer */
+		overflow-y: auto;
+		padding-bottom: 80px; /* Avoid keyboard overlap */
+		-webkit-overflow-scrolling: touch;
 	`}
+
+	/* Prevent clipping issues on small screens */
+	@media (max-width: 768px) {
+		max-height: 30vh;
+		margin-bottom:40px;
+	}
 `;
+
 
 const UploadButtons = styled.div`
 	display: flex;
@@ -797,7 +802,10 @@ const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> 
 							<div className="w-full">
 								{customizeTab === 'text' && (
 									<>
-										<h1 className="pb-3">Add Text</h1>
+										<div className="flex justify-between items-center w-full">
+											<h1 className="pb-3 text-white">Add Text</h1>
+											<button className='text-white md:hidden block' onClick={() => closeDialog("add-text")}>×</button>
+										</div>
 										{showAddTextButton && (
 											<ReuseBtn className="w-full" onClick={handleAddTextClick}>
 												<Icon>
@@ -814,8 +822,10 @@ const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> 
 							<div className="w-full">
 								{customizeTab === 'gallery' && showGalleryButton && (
 									<>
-										<h1 className="pb-3 text-xl font-semibold">Add Clipart</h1>
-										
+										<div className="flex items-center justify-between">
+											<h1 className="pb-3 text-xl text-white font-semibold">Add Clipart</h1>
+										    <button className='text-white md:hidden block text-xl mb-3' onClick={() => closeDialog("add-text")}>×</button>
+										</div>
 										<ClipArtGalleryContainer>
 											<ClipArtHeader>
 												<ClipArtCategorySelect
@@ -870,7 +880,7 @@ const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> 
 							<div className="w-full">
 								{customizeTab === 'upload' && (
 									<>
-										<h1 className="pb-4">Upload Image</h1>
+										<h1 className="pb-4  text-white">Upload Image</h1>
 										{showUploadButton && (
 											<>
 												<button
