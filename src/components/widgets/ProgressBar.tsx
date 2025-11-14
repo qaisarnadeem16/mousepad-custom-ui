@@ -6,23 +6,60 @@ import { ReactComponent as CheckSolid } from '../../assets/icons/check-circle-so
 import { Icon } from 'components/Atomic';
 import useStore from 'Store';
 
+/* IMPORT LOGO */
+import LogoImg from '../../assets/images/logo.avif';
+
+/* WRAPPER WITH GLOW + GLASS BACKGROUND */
+const ProgressWrapper = styled.div`
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 9999;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+
+	background: rgba(12, 15, 43, 0.55); /* dark transparent theme background */
+	backdrop-filter: blur(12px);        /* glassy blur */
+	padding: 22px 30px;
+	border-radius: 22px;
+
+	/* Purple glow theme shadow */
+	box-shadow: 0px 8px 40px rgba(102, 51, 255, 0.55);
+`;
+
+
+const Logo = styled.img`
+	width: 110px;
+	height: auto;
+	margin-bottom: 14px;
+`;
+
 const LoadingLabel = styled.div`
-	color: #000;
-	font-size: 12px;
+	color: #fff;
+	font-size: 14px;
 	font-style: normal;
-	font-weight: 700;
-	line-height: 16px;
+	font-weight: 600;
+	line-height: 18px;
+	margin-bottom: 12px;
 `;
 
 const LoaderContainer = styled.div<{ $isMobile: boolean }>`
-	height: 8px;
-	${(props) => (props.$isMobile ? `width: 250px` : `width: 600px`)};
-	border-radius: 4px;
-	background-color: #dbe2e6;
+	height: 10px;
+	width: ${(props) => (props.$isMobile ? `260px` : `600px`)};
+	border-radius: 8px;
+	background-color: #0c0f2b; /* dark UI-like panel */
+	overflow: hidden;
+
+	/* Soft purple glow - same style as toolbar */
+	box-shadow: 0 4px 25px rgba(102, 51, 255, 0.45);
 `;
 
 const LoadingPercentageLabel = styled.span`
-	color: #8fa4ae;
+	color: #fff;
 	font-weight: 400;
 	font-size: 12px;
 	line-height: 16px;
@@ -32,21 +69,21 @@ const LoadingPercentageLabel = styled.span`
 const LoadingPercentageandIconContainer = styled.div`
 	display: flex;
 	justify-content: space-between;
+	margin-top: 8px;
+	width: 100%;
 `;
 
 const CheckIcon = styled(Icon)`
 	cursor: unset;
-	color: #008556;
+	color: #00c285;
 `;
 
-const LoaderFill = styled.div<{ $completed: number; $bgColor: string; $isCompleted: boolean }>`
+const LoaderFill = styled.div<{ $completed: number }>`
 	height: 100%;
-	border-radius: 4px;
-	margin: 7px 0px;
-	${(props) => `width: ${props.$completed}% `};
-	${(props) =>
-		props.$bgColor && props.$isCompleted ? `background-color: #008556` : `background-color: ${props.$bgColor}`};
-	border-radius: 'inherit';
+	width: ${(props) => props.$completed}%;
+	background-color: #6633FF;
+	border-radius: 8px;
+	transition: width 0.35s ease;
 `;
 
 const ProgressBar: FC<{ $flagStartLoading: boolean; $bgColor: string; $completed: number }> = ({
@@ -57,8 +94,11 @@ const ProgressBar: FC<{ $flagStartLoading: boolean; $bgColor: string; $completed
 	const { isSceneLoading } = useZakeke();
 	const { isMobile } = useStore();
 
+	const calculatedValue = !isSceneLoading && $flagStartLoading ? 100 : $completed;
+
 	return (
-		<div>
+		<ProgressWrapper>
+			<Logo src={LogoImg} alt="Brand Logo" />
 			<LoadingLabel>
 				{isSceneLoading
 					? T._d('Loading your product...')
@@ -68,27 +108,26 @@ const ProgressBar: FC<{ $flagStartLoading: boolean; $bgColor: string; $completed
 					? T._d('Loading complete.')
 					: T._('Loading complete.', 'Composer')}
 			</LoadingLabel>
+
 			<LoaderContainer $isMobile={isMobile}>
-				<LoaderFill
-					$completed={!isSceneLoading && $flagStartLoading ? 100 : $completed}
-					$bgColor={$bgColor}
-					$isCompleted={!isSceneLoading && $flagStartLoading}
-				></LoaderFill>
-				<LoadingPercentageandIconContainer>
-					<LoadingPercentageLabel>
-						{isSceneLoading
-							? (T._d('In progress | ') ? T._d('In progress | ') : T._('In progress | ', 'Composer')) +
-							  `${$completed}%`
-							: '100%'}
-					</LoadingPercentageLabel>
-					{!isSceneLoading && (
-						<CheckIcon>
-							<CheckSolid />
-						</CheckIcon>
-					)}
-				</LoadingPercentageandIconContainer>
+				<LoaderFill $completed={calculatedValue} />
 			</LoaderContainer>
-		</div>
+
+			<LoadingPercentageandIconContainer>
+				<LoadingPercentageLabel>
+					{isSceneLoading
+						? (T._d('In progress | ') ? T._d('In progress | ') : T._('In progress | ', 'Composer')) +
+						  `${$completed}%`
+						: '100%'}
+				</LoadingPercentageLabel>
+
+				{!isSceneLoading && (
+					<CheckIcon>
+						<CheckSolid />
+					</CheckIcon>
+				)}
+			</LoadingPercentageandIconContainer>
+		</ProgressWrapper>
 	);
 };
 

@@ -74,7 +74,7 @@ const AddToCartButton = styled(Button)`
     padding: 8px;
 	font-size:20px;
 	font-weight:500;
-	font-family:Saira;
+	font-family:"Roboto";
 	background-color:#6633FF;
 	&:hover {
         background-color: #4c26be;

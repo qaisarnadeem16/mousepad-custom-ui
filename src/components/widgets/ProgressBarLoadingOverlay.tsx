@@ -12,6 +12,7 @@ const ProgressBarLoadingBackground = styled.div`
 	width: 100%;
 	height: 100%;
 	position: fixed;
+	background: #090B38;;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -29,7 +30,7 @@ const ProgressBarLoadingContainer = styled.div<{ $isMobile?: boolean }>`
 	align-items: flex-start;
 	gap: 8px;
 	border-radius: 4px;
-	background: var(--surface-default, #fff);
+	background: #090B38;
 	box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.15), 0px 0px 3px 0px rgba(0, 0, 0, 0.1);
 `;
 
