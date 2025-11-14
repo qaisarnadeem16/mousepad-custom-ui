@@ -191,6 +191,8 @@ const ClipArtCategorySelect = styled.select`
 	}
 	
 	option {
+	color: #6633FF;
+
 		padding: 10px;
 	}
 `;
@@ -270,9 +272,9 @@ const ClipArtItem = styled.div<{ isActive?: boolean }>`
 
 	img {
 		width: 100%;
-		height: auto;
-		max-height: 120px;
-		object-fit: contain;
+		height: 70px;
+		max-height: 100px;
+		object-fit: cover;
 		display: block;
 		border-radius: 6px;
 	}

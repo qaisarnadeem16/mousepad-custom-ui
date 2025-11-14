@@ -46,10 +46,11 @@ const OptionIconContainer: FC<{
 };
 
 const OptionIcon = styled.img<{ optionShape?: boolean }>`
-	object-fit: contain;
+	object-fit: cover;
 	width: 100%;
 	height: 100%;
 	aspect-ratio: 1;
+	border-radius: 5px;
 
 	${(props) =>
 		props.optionShape &&

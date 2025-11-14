@@ -34,8 +34,8 @@ export const GroupItem = styled.div`
 	flex-flow: column;
 	justify-content: center;
 	align-items: center;
-	height: 56;
-	width: 54;
+	height: 36;
+	width: 36;
 	margin-bottom: 20px;
 	text-align: center;
 	cursor: pointer;
@@ -72,8 +72,8 @@ export const GroupItem = styled.div`
 `;
 
 export const GroupIcon = styled.img`
-	width: 40px;
-	height: 40px;
+	width: 25px;
+	height: 25px;
 	/* height: 40px; */
 	object-fit: contain;
 	/* margin-bottom: 10px; */
