@@ -1,3 +1,10 @@
+@font-face {
+  font-family: "JoyrideStd";
+  src: url("./assets/fonts/Joyride-STD.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,8 +14,7 @@ html,
 #root {
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
-    "Droid Sans", "Helvetica Neue", sans-serif;
+  font-family: "JoyrideStd", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   width: 100%;
@@ -43,7 +49,6 @@ html,
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #8258ff;     /* lighter shade on hover */
 }
-
 
 ::-webkit-scrollbar {
   padding: 1px;

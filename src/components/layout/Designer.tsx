@@ -806,7 +806,7 @@ const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> 
 									<>
 										<div className="flex justify-between items-center w-full">
 											<h1 className="pb-3 text-white">Add Text</h1>
-											<button className='text-white md:hidden block' onClick={() => closeDialog("add-text")}>×</button>
+											{/* <button className='text-white md:hidden block' onClick={() => closeDialog("add-text")}>×</button> */}
 										</div>
 										{showAddTextButton && (
 											<ReuseBtn className="w-full" onClick={handleAddTextClick}>
@@ -826,7 +826,7 @@ const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> 
 									<>
 										<div className="flex items-center justify-between">
 											<h1 className="pb-3 text-xl text-white font-semibold">Add Clipart</h1>
-										    <button className='text-white md:hidden block text-xl mb-3' onClick={() => closeDialog("add-text")}>×</button>
+										    {/* <button className='text-white md:hidden block text-xl mb-3' onClick={() => closeDialog("add-text")}>×</button> */}
 										</div>
 										<ClipArtGalleryContainer>
 											<ClipArtHeader>

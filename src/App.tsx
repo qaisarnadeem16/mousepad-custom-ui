@@ -8,6 +8,7 @@ import { debounce } from 'lodash';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import 'react-tippy/dist/tippy.css';
 import styled from 'styled-components';
+import "./assets/fonts/Joyride-STD.otf";
 import './App.css';
 import useStore from './Store';
 import ProgressBarLoadingOverlay from './components/widgets/ProgressBarLoadingOverlay';

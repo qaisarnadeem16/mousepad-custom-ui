@@ -79,7 +79,7 @@ const Viewer3D = () => {
 		isAIEnabled,
 		setCameraByName,
 	} = useZakeke();
-	const {isViewerMode}=useStore()
+	const { isViewerMode } = useStore()
 
 	const [isRecapPanelOpened, setRecapPanelOpened] = useState(
 		sellerSettings?.isCompositionRecapVisibleFromStart ?? false
@@ -87,7 +87,7 @@ const Viewer3D = () => {
 
 	const { showDialog, closeDialog } = useDialogManager();
 	const { setIsLoading, notifications, removeNotification, isDraftEditor, isEditorMode } = useStore();
-	
+
 	// HOTFIX for Coutie while RapidCompact resolves the issue with iOS AR
 	const isCoutie = userSettings?.userID === 271265;
 	useEffect(() => {
@@ -123,16 +123,16 @@ const Viewer3D = () => {
 						'open-ar',
 						<Dialog windowDecorator={DialogWindowDecorator} onClose={() => closeDialog('open-ar')} lighterOverlay={true}>
 							<SpanAndButtonContainer>
-							<span>Bring it to life in your space!</span>
-							<Button
-								style={{ display: 'block', width: '80%' }}
-								onClick={() => {
-									closeDialog('open-ar');
-									openArMobile(url as string);
-								}}
-							>
-								View in AR
-							</Button>
+								<span>Bring it to life in your space!</span>
+								<Button
+									style={{ display: 'block', width: '80%' }}
+									onClick={() => {
+										closeDialog('open-ar');
+										openArMobile(url as string);
+									}}
+								>
+									View in AR
+								</Button>
 							</SpanAndButtonContainer>
 						</Dialog>
 					);
@@ -203,8 +203,8 @@ const Viewer3D = () => {
 	};
 
 	const handleShareClick = async () => {
-			setCameraByName('buy_screenshot_camera', false, false);
-			showDialog('share', <ShareDialog />);
+		setCameraByName('buy_screenshot_camera', false, false);
+		showDialog('share', <ShareDialog />);
 	};
 
 	const handleSaveClick = async () => {
@@ -215,82 +215,82 @@ const Viewer3D = () => {
 	return (
 		<ViewerContainer ref={ref}>
 			{!isSceneLoading && <ZakekeViewer bgColor='#00000000' />}
-              {!isInfoPointContentVisible && (
-            <div className="">
-	          <div className="absolute top-4  flex items-center w-full z-10 justify-center">
-                <div 
-				 className="flex relative items-center gap-7 
-    bg-[#070b3a]/90 text-white px-6 py-4 mx-auto md:w-auto justify-center w-full md:py-2 md:rounded-full 
+			{!isInfoPointContentVisible && (
+				<div className="">
+					<div className="absolute top-4  flex items-center w-full z-10 justify-center">
+						<div
+							className="flex relative items-center gap-7 
+    bg-[#070b3a]/90 text-white px-6 py-4 mx-auto md:w-auto w-[94%] justify-center w-full md:py-2 md:rounded-full 
     shadow-[0_0_40px_10px_rgba(102,51,255,0.4)] border border-indigo-700/40
     backdrop-blur-md"
-				>
-		  {sellerSettings?.canUndoRedo && (
-			<div onClick={handleUndoClick} className="flex cursor-pointer items-center gap-2">
-			  <UndoIcon $isMobile={isMobile} key={'undo'} hoverable >
-				<UndoSolid />
-			  </UndoIcon>
-			  <p className='text-base md:block hidden'>Undo</p>
-			</div>
-		)}
-		{sellerSettings?.canUndoRedo && (
-			<div onClick={handleRedoClick} className="flex cursor-pointer items-center gap-2">
-              <RedoIcon $isMobile={isMobile} key={'redo'} hoverable>
-				<RedoSolid />
-			  </RedoIcon>
-			  <p className='text-base md:block hidden'>Redo</p>
-			</div>
-		)}
-			{/* {!isDraftEditor &&
+						>
+							{sellerSettings?.canUndoRedo && (
+								<div onClick={handleUndoClick} className="flex cursor-pointer items-center gap-2">
+									<UndoIcon $isMobile={isMobile} key={'undo'} hoverable >
+										<UndoSolid />
+									</UndoIcon>
+									<p className='text-base md:block hidden'>Undo</p>
+								</div>
+							)}
+							{sellerSettings?.canUndoRedo && (
+								<div onClick={handleRedoClick} className="flex cursor-pointer items-center gap-2">
+									<RedoIcon $isMobile={isMobile} key={'redo'} hoverable>
+										<RedoSolid />
+									</RedoIcon>
+									<p className='text-base md:block hidden'>Redo</p>
+								</div>
+							)}
+							{/* {!isDraftEditor &&
 				!isEditorMode &&
 				!isViewerMode &&
 				sellerSettings &&
 				sellerSettings.canSaveDraftComposition && ( */}
-				<div className='flex gap-2 items-center cursor-pointer' key={'save'} onClick={() => handleSaveClick()}>
-				    <SaveSolid />
-				    <span className='text-base md:block hidden'>Save</span>
-				</div>
-			{/* )} */}
-			{/* {sellerSettings && */}
-			    {/* sellerSettings.shareType !== 0 &&
+							<div className='flex gap-2 items-center cursor-pointer' key={'save'} onClick={() => handleSaveClick()}>
+								<SaveSolid />
+								<span className='text-base md:block hidden'>Save</span>
+							</div>
+							{/* )} */}
+							{/* {sellerSettings && */}
+							{/* sellerSettings.shareType !== 0 &&
 				!isEditorMode &&
 				!isDraftEditor &&
 				!isEditorMode && ( */}
-				<div className="flex gap-2 items-center cursor-pointer" key={'share'} onClick={() => handleShareClick()}>
-				    <ShareSolid />
-					<p className='text-base md:block hidden'>Share</p>
-				</div>
-			{/* )} */}
-        <div className="flex items-center cursor-pointer gap-2 hover:text-indigo-400 transition">
-          <RotationIcon />
-		  <span className="sm:inline text-sm hidden">Rotate</span>
-        </div>
+							<div className="flex gap-2 items-center cursor-pointer" key={'share'} onClick={() => handleShareClick()}>
+								<ShareSolid />
+								<p className='text-base md:block hidden'>Share</p>
+							</div>
+							{/* )} */}
+							<div className="flex items-center cursor-pointer gap-2 hover:text-indigo-400 transition">
+								<RotationIcon />
+								<span className="sm:inline text-sm hidden">Rotate</span>
+							</div>
 
-		<div className="flex cursor-pointer items-center gap-2">
-          <ZoomInIcon $isMobile={isMobile} key={'zoomin'} hoverable onClick={zoomIn}>
-			<SearchPlusSolid />
-		 </ZoomInIcon>
-		</div>
-       
-        <div className="flex cursor-pointer items-center gap-2">
-		 <ZoomOutIcon $isMobile={isMobile} key={'zoomout'} hoverable onClick={zoomOut}>
-			 <SearchMinusSolid />
-		 </ZoomOutIcon>
-		</div>
-		{/* {sellerSettings?.canUndoRedo && (
+							<div className="flex cursor-pointer items-center gap-2">
+								<ZoomInIcon $isMobile={isMobile} key={'zoomin'} hoverable onClick={zoomIn}>
+									<SearchPlusSolid />
+								</ZoomInIcon>
+							</div>
+
+							<div className="flex cursor-pointer items-center gap-2">
+								<ZoomOutIcon $isMobile={isMobile} key={'zoomout'} hoverable onClick={zoomOut}>
+									<SearchMinusSolid />
+								</ZoomOutIcon>
+							</div>
+							{/* {sellerSettings?.canUndoRedo && (
 			<ResetIcon $isMobile={isMobile} key={'reset'} hoverable onClick={reset}>
 		      <ResetSolid />
 		    </ResetIcon>
 		)} */}
-        {/* AR View Button */}
-        {/* {isSceneArEnabled() && !isDraftEditor && !isEditorMode && ( */}
-			<div onClick={() => handleArClick()} >
-			  <h1 className='bg-[#6633FF] md:block hidden text-sm text-white py-2 px-4 hover:cursor-pointer hover:bg-blue-600 rounded-full'>AR View</h1>
-			</div>
-		{/* )} */}
-      </div>
-    </div>
- </div>
-)}
+							{/* AR View Button */}
+							{/* {isSceneArEnabled() && !isDraftEditor && !isEditorMode && ( */}
+							<div onClick={() => handleArClick()} >
+								<h1 className='bg-[#6633FF] md:block hidden text-sm text-white py-2 px-4 hover:cursor-pointer hover:bg-blue-600 rounded-full'>AR View</h1>
+							</div>
+							{/* )} */}
+						</div>
+					</div>
+				</div>
+			)}
 			{/* {!isInfoPointContentVisible && (
 				<div className=''>
 					<ZoomInIcon $isMobile={isMobile} key={'zoomin'} hoverable onClick={zoomIn}>
@@ -373,7 +373,7 @@ const Viewer3D = () => {
 				</div>
 			)} */}
 
-		
+
 			{/* Notifications */}
 			<Notifications
 				notifications={notifications}

@@ -24,6 +24,7 @@ export const MobileItemContainer = styled.div<{ selected?: boolean }>`
 	border: ${(props) => (props.selected ? "1px #6633FF solid " : "1px #fff solid")};
 	position: relative;
 	background-color: #090B38;
+	overflow:hidden;
 `;
 
 // Styled component for the image of each menu item

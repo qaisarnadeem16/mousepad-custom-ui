@@ -22,6 +22,7 @@ const NumberInput = styled.div`
 // Styled component for the container of the up and down arrows
 const NumberInputArrows = styled.div`
 	display: flex;
+	margin-right:5px;
 	flex-direction: column;
 	div {
 		width: 15px;

@@ -27,6 +27,7 @@ import { useEffect, useRef, useState } from 'react';
 
 export const FooterContainer = styled.div`
 	display: flex;
+	align-items:center;
 	flex-direction: row;
 	align-items:center;
 	height: 120px;
@@ -73,9 +74,8 @@ const AddToCartButton = styled(Button)`
 	border-radius:10px;
 	border:none;
     padding: 8px;
-	font-size:20px;
-	font-weight:500;
-	font-family:"Roboto";
+	font-size:15px;
+	font-weight:400;
 	background-color:#6633FF;
 	&:hover {
         background-color: #4c26be;
@@ -324,7 +324,7 @@ const FooterDesktop = () => {
 					{/* Quantity input */}
 					{product && product.quantityRule && (
 						<QuantityContainer>
-							<label>{T._d('Quantity')}</label>
+							{/* <label>{T._d('Quantity')}</label> */}
 							<NumericInput
 								value={quantity}
 								readOnly={

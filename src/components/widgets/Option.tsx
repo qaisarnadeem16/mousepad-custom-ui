@@ -11,14 +11,15 @@ const OptionContainer = styled.div<{ optionShape: number; selected: boolean; has
 	align-items: center;
 	cursor: pointer;
 	position: relative;
+	object-fit: cover;
 	padding: ${(props) => (props.hasDescriptionIcon ? '26px' : '10px')} 0px 10px 0;
 	user-select: none;
-	width: 100%;
-	height: 125px;
+	width: 80%;
+	// height: 165px;
 	min-width: 0;
 	border-radius: 10px;
 	/* padding: 5px; */
-border: 1px solid #836ACE4F;
+    border: 1px solid #836ACE4F;
 	&:hover {
 		/* background-color: #f5f6f7; */
 	}
@@ -35,7 +36,7 @@ border: 1px solid #836ACE4F;
 const OptionIconContainerStyled = styled.div`
 	overflow: hidden;
 	width: 100%;
-	aspect-ratio: 1;
+	// aspect-ratio: 1;
 	padding: 0 10px;
 `;
 
@@ -50,7 +51,6 @@ const OptionIcon = styled.img<{ optionShape?: boolean }>`
 	width: 100%;
 	height: 100%;
 	aspect-ratio: 1;
-	border-radius: 5px;
 
 	${(props) =>
 		props.optionShape &&

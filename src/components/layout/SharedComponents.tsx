@@ -539,7 +539,7 @@ export const QuantityContainer = styled.div`
 	grid-gap: 5px;
 	/* min-width: 150px; */
 	/* input{
-		min-width: 100px;
+		// min-width: 100px;
 	} */
 `;
 

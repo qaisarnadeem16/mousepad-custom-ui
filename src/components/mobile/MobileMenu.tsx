@@ -31,7 +31,7 @@ const BottomGroupBar = styled.div`
 	left: 0;
 	right: 0;
 	background-color: #090b38;
-	border-top: 1px solid #fff;
+	// border-top: 1px solid #fff;
 	border-top-left-radius: 16px;
 	border-top-right-radius: 16px;
 	display: flex;
@@ -130,9 +130,9 @@ const DrawerHeader = styled.div`
 const TabsContainer = styled.div`
 	display: flex;
 	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-	padding: 0 16px;
+	padding: 0 10px;
 	flex-shrink: 0;
-	overflow-x: auto;
+	// overflow-x: auto;
 
 	&::-webkit-scrollbar {
 		height: 4px;
@@ -152,8 +152,8 @@ const Tab = styled.button<{ active: boolean }>`
 	border: 2px solid ${(props) => (props.active ? '#6633ff' : 'transparent')};
 	color: ${(props) => (props.active ? '#fff' : '#000')};
 	cursor: pointer;
-	font-size: 14px;
-	font-weight: ${(props) => (props.active ? '600' : '400')};
+	font-size: 10px;
+	font-weight: ${(props) => (props.active ? '400' : '400')};
 	transition: all 0.2s ease;
 	white-space: nowrap;
 
