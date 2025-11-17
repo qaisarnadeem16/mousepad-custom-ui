@@ -516,10 +516,11 @@ export const ActualStepName = styled.h4<{ $isMobile?: boolean }>`
 `;
 
 export const QuantityContainer = styled.div`
-    min-width: 150px;
+    // min-width: 150px;
+	margin-left: 8px;
 	border-radius:10px;
 	border:none;
-    padding: 8px;
+    padding: 7px;
 	font-size:20px;
 	font-weight:500;
 	font-family:"Roboto";
