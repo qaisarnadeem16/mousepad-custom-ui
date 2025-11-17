@@ -322,10 +322,10 @@ const FooterDesktop = () => {
 			{T.translations?.statics && (
 				<>
 					{/* Quantity input */}
-					{/* {product && product.quantityRule && ( */}
+					{product && product.quantityRule && (
 						<QuantityContainer>
 							<label>{T._d('Quantity')}</label>
-							{/* <NumericInput
+							<NumericInput
 								value={quantity}
 								readOnly={
 									product.quantityRule &&
@@ -353,9 +353,9 @@ const FooterDesktop = () => {
 										: undefined
 								}
 								step={product.quantityRule.step != null ? product.quantityRule.step : 1}
-							/> */}
+							/>
 						</QuantityContainer>
-					{/* )} */}
+					 )} 
 
 					{/* Right elements container */}
 					<FooterRightElementsContainer className='right-footer'>
