@@ -25,8 +25,8 @@ const NumberInputArrows = styled.div`
 	margin-right:5px;
 	flex-direction: column;
 	div {
-		width: 15px;
-		height: 15px;
+		width: 20px;
+		height: 24px;
 		// color: gray;
 	}
 `;

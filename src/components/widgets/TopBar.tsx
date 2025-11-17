@@ -95,7 +95,7 @@ const TopBar: React.FC<TopBarProps> = ({
                 {/* Right Side Icons */}
                 <div className="flex space-x-2">
                     {/* Bottom Right Icons */}
-                    <div className="flex font-normal space-x-2">
+                    <div className="flex space-x-2">
                         {hasExplodedMode() && product && !isSceneLoading && (
                             <>
                                 <CollapseButton onClick={() => setExplodedMode(false)} />
@@ -154,7 +154,7 @@ const ZoomOutButton: React.FC<{ isMobile: boolean; onClick: () => void }> = ({ i
 
 const ResetButton: React.FC<{ isMobile: boolean; onClick: () => void }> = ({ isMobile, onClick }) => (
     <button
-        className={`p-2 rounded-full font-normal hover:bg-gray-100 transition-colors ${isMobile ? 'text-sm' : ''}`}
+        className={`p-2 rounded-full hover:bg-gray-100 transition-colors ${isMobile ? 'text-sm' : ''}`}
         onClick={onClick}
     >
         Reset
@@ -163,7 +163,7 @@ const ResetButton: React.FC<{ isMobile: boolean; onClick: () => void }> = ({ isM
 
 const UndoButton: React.FC<{ isMobile: boolean; onClick: () => void }> = ({ isMobile, onClick }) => (
     <button
-        className={`p-2 rounded-full font-normal hover:bg-gray-100 transition-colors ${isMobile ? 'text-sm' : ''}`}
+        className={`p-2 rounded-full hover:bg-gray-100 transition-colors ${isMobile ? 'text-sm' : ''}`}
         onClick={onClick}
     >
         UNdo
@@ -172,7 +172,7 @@ const UndoButton: React.FC<{ isMobile: boolean; onClick: () => void }> = ({ isMo
 
 const RedoButton: React.FC<{ isMobile: boolean; onClick: () => void }> = ({ isMobile, onClick }) => (
     <button
-        className={`p-2 rounded-full font-normal hover:bg-gray-100 transition-colors ${isMobile ? 'text-sm' : ''}`}
+        className={`p-2 rounded-full hover:bg-gray-100 transition-colors ${isMobile ? 'text-sm' : ''}`}
         onClick={onClick}
     >
         Redo
@@ -186,7 +186,7 @@ const CollapseButton: React.FC<{ onClick: () => void }> = ({ onClick }) => (
 );
 
 const ExplodeButton: React.FC<{ onClick: () => void }> = ({ onClick }) => (
-    <button className="p-2 font-normal rounded-full hover:bg-gray-100 transition-colors" onClick={onClick}>
+    <button className="p-2 rounded-full hover:bg-gray-100 transition-colors" onClick={onClick}>
         Explode
     </button>
 );
