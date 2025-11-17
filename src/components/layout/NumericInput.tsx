@@ -16,7 +16,7 @@ const NumberInput = styled.div`
 		width: 30px;
 		// border: 1px solid transparent;
 	}
-	padding: 5px 10px 5px 10px;
+	// padding: 5px 10px 5px 10px;
 `;
 
 // Styled component for the container of the up and down arrows
@@ -33,7 +33,7 @@ const NumberInputArrows = styled.div`
 // Styled component for the input element
 const Input = styled.input`
 color:white;
-background-color:#4c26be;
+background-color:#6633FF;
 `;
 
 // NumericInput component that represents a numeric input field with up and down arrows
