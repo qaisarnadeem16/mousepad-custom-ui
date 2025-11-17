@@ -28,6 +28,7 @@ import { useEffect, useRef, useState } from 'react';
 export const FooterContainer = styled.div`
 	display: flex;
 	flex-direction: row;
+	align-items:center;
 	height: 120px;
 	border-top:1px solid #6633FF;
 	background-color: #090B38;
@@ -321,10 +322,10 @@ const FooterDesktop = () => {
 			{T.translations?.statics && (
 				<>
 					{/* Quantity input */}
-					{product && product.quantityRule && (
+					{/* {product && product.quantityRule && ( */}
 						<QuantityContainer>
 							<label>{T._d('Quantity')}</label>
-							<NumericInput
+							{/* <NumericInput
 								value={quantity}
 								readOnly={
 									product.quantityRule &&
@@ -352,9 +353,9 @@ const FooterDesktop = () => {
 										: undefined
 								}
 								step={product.quantityRule.step != null ? product.quantityRule.step : 1}
-							/>
+							/> */}
 						</QuantityContainer>
-					)}
+					{/* )} */}
 
 					{/* Right elements container */}
 					<FooterRightElementsContainer className='right-footer'>
@@ -482,9 +483,9 @@ const FooterDesktop = () => {
 					
 					{/* {price !== null && price > 0 && (!sellerSettings || !sellerSettings.hidePrice) && ( */}
 							<div className="">
-								<div className="text-white opacity-30 Saira">
+								{/* <div className="text-white opacity-30 Saira">
 								<p className='text-base font-normal'>save 30%</p>
-							   </div>
+							   </div> */}
 							
 							<PriceContainer>
 								{!isOutOfStock && priceFormatter.format(price)}

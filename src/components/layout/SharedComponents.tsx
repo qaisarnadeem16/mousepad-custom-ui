@@ -516,14 +516,26 @@ export const ActualStepName = styled.h4<{ $isMobile?: boolean }>`
 `;
 
 export const QuantityContainer = styled.div`
+    min-width: 150px;
+	border-radius:10px;
+	border:none;
+    padding: 8px;
+	font-size:20px;
+	font-weight:500;
+	font-family:"Roboto";
+	background-color:#6633FF;
+	&:hover {
+        background-color: #4c26be;
+		border:none;
+      }
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
 	align-items: center;
-	height: 70px;
-	background-color: white;
+	height: 50px;
+	// background-color: white;
 	padding-left: 10px;
-	color: #313c46;
+	color: #fff;
 	grid-gap: 10px;
 	/* min-width: 150px; */
 	/* input{
