@@ -536,7 +536,7 @@ export const QuantityContainer = styled.div`
 	// background-color: white;
 	padding-left: 10px;
 	color: #fff;
-	grid-gap: 10px;
+	grid-gap: 5px;
 	/* min-width: 150px; */
 	/* input{
 		min-width: 100px;

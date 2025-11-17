@@ -11,10 +11,10 @@ const NumberInput = styled.div`
 	justify-content: center;
 	align-items: center;
 	margin-left: 5px;
-	border: 1px solid #f4f4f4;
+	// border: 1px solid #f4f4f4;
 	input {
-		width: 50px;
-		border: 1px solid transparent;
+		width: 30px;
+		// border: 1px solid transparent;
 	}
 	padding: 5px 10px 5px 10px;
 `;
@@ -26,12 +26,15 @@ const NumberInputArrows = styled.div`
 	div {
 		width: 15px;
 		height: 15px;
-		color: gray;
+		// color: gray;
 	}
 `;
 
 // Styled component for the input element
-const Input = styled.input``;
+const Input = styled.input`
+color:white;
+background-color:#4c26be;
+`;
 
 // NumericInput component that represents a numeric input field with up and down arrows
 export const NumericInput: FC<{
