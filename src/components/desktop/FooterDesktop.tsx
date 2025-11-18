@@ -37,7 +37,7 @@ export const FooterContainer = styled.div`
 	border-bottom-right-radius: 30px;
 	box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
     @media (max-width: 1024px) {
-		position:absolute;
+		// position:absolute;
         width:auto;
 		left:0px;
 		top:73px;

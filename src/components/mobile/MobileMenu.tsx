@@ -13,6 +13,7 @@ import galleryIcon from '../../assets/Gallery.svg';
 import Designer from '../layout/Designer';
 import DesignsDraftList from '../layout/DesignsDraftList';
 import { MenuItem } from './MobileMenuComponents';
+import FooterDesktop from 'components/desktop/FooterDesktop';
 
 // ------------------ STYLES ------------------
 export const MobileMenuContainer = styled.div`
@@ -23,21 +24,23 @@ export const MobileMenuContainer = styled.div`
 	background-color: #090b38;
 	position: relative;
 	overflow: hidden;
+	border-top-left-radius: 16px;
+	border-top-right-radius: 16px;
+	padding-bottom: 150px; /* Space for bottom group bar + footer */
 `;
 
 const BottomGroupBar = styled.div`
 	position: fixed;
-	bottom: 0;
+	bottom: 60px; /* Space for footer */
 	left: 0;
 	right: 0;
 	background-color: #090b38;
-	// border-top: 1px solid #fff;
 	border-top-left-radius: 16px;
 	border-top-right-radius: 16px;
 	display: flex;
 	justify-content: space-evenly;
 	overflow-x: auto;
-	z-index: 400;
+	z-index: 500;
 	padding: 12px 8px;
 	gap: 8px;
 	box-shadow: 0 0 18px 0 #6633ff;
@@ -49,6 +52,15 @@ const BottomGroupBar = styled.div`
 		background: rgba(255, 255, 255, 0.3);
 		border-radius: 2px;
 	}
+`;
+
+const FooterWrapper = styled.div`
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 500;
+	background-color: #090b38;
 `;
 
 const GroupBarItem = styled.div<{ selected?: boolean }>`
@@ -71,7 +83,7 @@ const GroupBarItem = styled.div<{ selected?: boolean }>`
 		height: 40px;
 		object-fit: contain;
 		opacity: ${(props) => (props.selected ? 1 : 0.8)};
-       filter: ${(props) => (props.selected ? "brightness(1.2)" : "brightness(0.9)")};
+		filter: ${(props) => (props.selected ? "brightness(1.2)" : "brightness(0.9)")};
 	}
 `;
 
@@ -80,9 +92,9 @@ const DrawerOverlay = styled.div<{ isOpen: boolean }>`
 	top: 0;
 	left: 0;
 	right: 0;
-	bottom: 0;
+	bottom: 155px; /* Stop before bottom group bar + footer */
 	background: rgba(0, 0, 0, 0.5);
-	z-index: 200;
+	z-index: 300;
 	opacity: ${(props) => (props.isOpen ? 1 : 0)};
 	pointer-events: ${(props) => (props.isOpen ? 'all' : 'none')};
 	transition: opacity 0.3s ease;
@@ -90,14 +102,14 @@ const DrawerOverlay = styled.div<{ isOpen: boolean }>`
 
 const DrawerContainer = styled.div<{ isOpen: boolean }>`
 	position: fixed;
-    bottom: 95px;
+	bottom: 155px; /* Above bottom group bar + footer */
 	left: 0;
 	right: 0;
 	background-color: #090b38;
 	border-top-left-radius: 16px;
 	border-top-right-radius: 16px;
 	max-height: 70vh;
-	z-index: 300;
+	z-index: 400;
 	transform: translateY(${(props) => (props.isOpen ? '0' : '100%')});
 	transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 	display: flex;
@@ -132,7 +144,6 @@ const TabsContainer = styled.div`
 	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 	padding: 0 10px;
 	flex-shrink: 0;
-	// overflow-x: auto;
 
 	&::-webkit-scrollbar {
 		height: 4px;
@@ -148,12 +159,11 @@ const Tab = styled.button<{ active: boolean }>`
 	min-width: 100px;
 	padding: 12px 16px;
 	background: ${(props) => (props.active ? '#6633FFBF' : '#FFFFFFD4')};
-	border: none;
 	border: 2px solid ${(props) => (props.active ? '#6633ff' : 'transparent')};
 	color: ${(props) => (props.active ? '#fff' : '#000')};
 	cursor: pointer;
 	font-size: 10px;
-	font-weight: ${(props) => (props.active ? '400' : '400')};
+	font-weight: 400;
 	transition: all 0.2s ease;
 	white-space: nowrap;
 
@@ -167,7 +177,8 @@ const DrawerContent = styled.div`
 	flex: 1;
 	overflow-y: auto;
 	padding: 16px 12px 24px 12px;
-    max-height:32vh;
+	max-height: 32vh;
+	
 	&::-webkit-scrollbar {
 		width: 6px;
 	}
@@ -289,6 +300,8 @@ const MobileMenu = () => {
 					dangerouslySetInnerHTML={{ __html: sellerSettings.priceInfoText }}
 				/>
 			)}
+
+			{/* Bottom Group Bar */}
 			<BottomGroupBar>
 				{actualGroups &&
 					!(actualGroups.length === 1 && actualGroups[0].name.toLowerCase() === 'other') &&
@@ -338,14 +351,21 @@ const MobileMenu = () => {
 					})}
 			</BottomGroupBar>
 
+			{/* Footer Desktop - Below Bottom Group Bar */}
+			<FooterWrapper>
+				<FooterDesktop />
+			</FooterWrapper>
+
+			{/* Drawer Overlay */}
 			<DrawerOverlay isOpen={isDrawerOpen} onClick={closeDrawer} />
+
+			{/* Drawer Container */}
 			<DrawerContainer isOpen={isDrawerOpen}>
-			  
 				<DrawerHeader>
 					<h3>{selectedGroup ? T._d(selectedGroup.name) : ''}</h3>
 					<button onClick={closeDrawer}>×</button>
-				  </DrawerHeader>
-             <div className="">
+				</DrawerHeader>
+
 				{/* Tabs for attributes */}
 				{selectedGroup && selectedGroup.attributes.length > 1 && (
 					<TabsContainer>
@@ -381,13 +401,12 @@ const MobileMenu = () => {
 						</OptionsGrid>
 					)}
 				</DrawerContent>
-			 </div>
 			</DrawerContainer>
 
-			{/* ✅ Designer Modal */}
+			{/* Designer Modal */}
 			{selectedGroupId === -2 && <Designer customizeTab={customizeTab} />}
 
-			{/* ✅ Draft Designs */}
+			{/* Draft Designs */}
 			{draftCompositions && selectedGroup?.id === -3 && isDesignsDraftListOpened && (
 				<DesignsDraftList
 					onCloseClick={() => {

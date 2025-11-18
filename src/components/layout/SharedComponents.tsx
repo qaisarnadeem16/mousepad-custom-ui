@@ -546,6 +546,10 @@ export const QuantityContainer = styled.div`
 	/* input{
 		// min-width: 100px;
 	} */
+    @media (max-width: 1024px) {
+		height: 42px;
+	}
+
 `;
 
 interface FooterMobileContainerProps {

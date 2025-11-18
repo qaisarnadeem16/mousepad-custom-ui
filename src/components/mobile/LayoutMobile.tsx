@@ -1,5 +1,5 @@
-import FooterDesktop from 'components/desktop/FooterDesktop';
-import FooterMobile from 'components/mobile/FooterMobile';
+// import FooterDesktop from 'components/desktop/FooterDesktop';
+// import FooterMobile from 'components/mobile/FooterMobile';
 import MobileMenu from 'components/mobile/MobileMenu';
 import Viewer3D from 'components/Viewer3D';
 import styled from 'styled-components';
@@ -52,7 +52,6 @@ function LayoutMobile() {
     <MobileContainer>
       <Viewer3D /> {/* Renders the 3D viewer */}
       <MobileMenu /> {/* Renders the mobile menu */}
-      <FooterDesktop/>
       {/* <FooterMobile />  */}
     </MobileContainer>
   );
