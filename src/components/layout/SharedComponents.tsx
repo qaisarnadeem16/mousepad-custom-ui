@@ -495,6 +495,7 @@ export const PriceContainer = styled.div<{ $isMobile?: boolean }>`
     color:white;`};
     @media (max-width: 1024px) {
 		margin-right: 0px;
+		font-size:20px;
 	}
 
 `;
