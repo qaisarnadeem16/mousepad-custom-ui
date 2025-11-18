@@ -810,7 +810,7 @@ const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> 
 									<>
 										<div className="flex justify-between mb-3 items-center w-full">
 											<h1 className="text-white">Add Text</h1>
-											<button className='text-white md:hidden block' onClick={onCloseClick}>
+											<button className='text-white lg:hidden block' onClick={onCloseClick}>
 												<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 													<path d="M18 6L6 18" stroke="white" stroke-width="2" stroke-linecap="round" />
 													<path d="M6 6L18 18" stroke="white" stroke-width="2" stroke-linecap="round" />
@@ -835,7 +835,7 @@ const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> 
 									<>
 										<div className="flex items-center mb-4 justify-between">
 											<h1 className="text-xl text-white font-semibold">Add Clipart</h1>
-											<button className='text-white md:hidden block' onClick={onCloseClick}>
+											<button className='text-white lg:hidden block' onClick={onCloseClick}>
 												<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 													<path d="M18 6L6 18" stroke="white" stroke-width="2" stroke-linecap="round" />
 													<path d="M6 6L18 18" stroke="white" stroke-width="2" stroke-linecap="round" />
@@ -898,7 +898,7 @@ const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> 
 									<>
 										<div className="flex items-center mb-4 justify-between">
 											<h1 className=" text-xl text-white font-semibold">Upload</h1>
-											<button className='text-white md:hidden block' onClick={onCloseClick}>
+											<button className='text-white lg:hidden block' onClick={onCloseClick}>
 												<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 													<path d="M18 6L6 18" stroke="white" stroke-width="2" stroke-linecap="round" />
 													<path d="M6 6L18 18" stroke="white" stroke-width="2" stroke-linecap="round" />
