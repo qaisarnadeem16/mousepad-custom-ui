@@ -101,9 +101,9 @@ const ProgressBar: FC<{ $flagStartLoading: boolean; $bgColor: string; $completed
 			<Logo src={LogoImg} alt="Brand Logo" />
 			<LoadingLabel>
 				{isSceneLoading
-					? T._d('Loading your product...')
-						? T._d('Loading your product...')
-						: T._('Loading your product...', 'Composer')
+					? T._d('LOADING THE FORGE ...')
+						? T._d('LOADING THE FORGE ...')
+						: T._('LOADING THE FORGE ...', 'Composer')
 					: T._d('Loading complete.')
 					? T._d('Loading complete.')
 					: T._('Loading complete.', 'Composer')}

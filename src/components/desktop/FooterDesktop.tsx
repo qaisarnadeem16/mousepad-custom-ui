@@ -36,6 +36,16 @@ export const FooterContainer = styled.div`
 	padding-top: 10px;
 	border-bottom-right-radius: 30px;
 	box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
+    @media (max-width: 1024px) {
+		position:absolute;
+        width:auto;
+		left:0px;
+		top:73px;
+		height: 65px;
+		border-radius:0px;
+		padding:10px 0px;
+		}
+
 `;
 
 export const FooterRightElementsContainer = styled.div`
@@ -52,6 +62,7 @@ export const FooterRightElementsContainer = styled.div`
 	font-size: 14px;
 	@media (max-width: 1024px) {
 		min-height: 70px;
+		grid-gap: 15px;
 	}
 `;
 
@@ -59,7 +70,7 @@ export const FooterRightElementsContainer = styled.div`
 const PriceInfoTextContainer = styled.div`
 	font-size: 26px;
 	font-weight:600;
-	font-family:Saira;
+	// font-family:Saira;
 	color:white;
 `;
 
@@ -81,6 +92,9 @@ const AddToCartButton = styled(Button)`
         background-color: #4c26be;
 		border:none;
       }
+	@media (max-width: 1024px) {
+		min-height: 40px;
+	}
 `;
 
 // FooterDesktop component

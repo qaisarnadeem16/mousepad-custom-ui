@@ -493,6 +493,10 @@ export const PriceContainer = styled.div<{ $isMobile?: boolean }>`
 		`
     margin-right: 0px;
     color:white;`};
+    @media (max-width: 1024px) {
+		margin-right: 0px;
+	}
+
 `;
 
 export const StepsContainer = styled.div`

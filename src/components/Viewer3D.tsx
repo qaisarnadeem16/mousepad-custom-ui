@@ -219,8 +219,8 @@ const Viewer3D = () => {
 				<div className="">
 					<div className="absolute top-4  flex items-center w-full z-10 justify-center">
 						<div
-							className="flex relative items-center gap-7 
-    bg-[#070b3a]/90 text-white px-6 py-4 mx-auto md:w-auto w-[94%] justify-center w-full md:py-2 md:rounded-full 
+							className="flex relative items-center gap-5 lg:gap-7 
+    bg-[#070b3a]/90 text-white px-6 py-4 mx-auto lg:w-auto md:w-[95%] w-[94%] justify-center w-full md:py-2 md:rounded-full 
     shadow-[0_0_40px_10px_rgba(102,51,255,0.4)] border border-indigo-700/40
     backdrop-blur-md"
 						>
@@ -284,7 +284,7 @@ const Viewer3D = () => {
 							{/* AR View Button */}
 							{/* {isSceneArEnabled() && !isDraftEditor && !isEditorMode && ( */}
 							<div onClick={() => handleArClick()} >
-								<h1 className='bg-[#6633FF] md:block hidden text-sm text-white py-2 px-4 hover:cursor-pointer hover:bg-blue-600 rounded-full'>AR View</h1>
+								<h1 className='bg-[#6633FF] md:block hidden text-xs lg:text-sm text-white py-2 px-2 lg:px-4 hover:cursor-pointer hover:bg-blue-600 rounded-full'>AR View</h1>
 							</div>
 							{/* )} */}
 						</div>
