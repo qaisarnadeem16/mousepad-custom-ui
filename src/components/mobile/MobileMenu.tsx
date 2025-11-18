@@ -292,6 +292,13 @@ const MobileMenu = () => {
 		setSelectedAttributeId(null);
 	};
 
+	const closeDesigner = () => {
+		setIsTemplateEditorOpened(false);
+		setSelectedGroupId(null);
+		setSelectedAttributeId(null);
+	};
+
+
 	// ------------------ RENDER ------------------
 	return (
 		<MobileMenuContainer>
@@ -363,7 +370,12 @@ const MobileMenu = () => {
 			<DrawerContainer isOpen={isDrawerOpen}>
 				<DrawerHeader>
 					<h3>{selectedGroup ? T._d(selectedGroup.name) : ''}</h3>
-					<button onClick={closeDrawer}>×</button>
+					<button onClick={closeDrawer}>
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M18 6L6 18" stroke="white" stroke-width="2" stroke-linecap="round" />
+							<path d="M6 6L18 18" stroke="white" stroke-width="2" stroke-linecap="round" />
+						</svg>
+					</button>
 				</DrawerHeader>
 
 				{/* Tabs for attributes */}
@@ -404,7 +416,7 @@ const MobileMenu = () => {
 			</DrawerContainer>
 
 			{/* Designer Modal */}
-			{selectedGroupId === -2 && <Designer customizeTab={customizeTab} />}
+			{selectedGroupId === -2 && <Designer customizeTab={customizeTab} onCloseClick={closeDesigner} />}
 
 			{/* Draft Designs */}
 			{draftCompositions && selectedGroup?.id === -3 && isDesignsDraftListOpened && (
