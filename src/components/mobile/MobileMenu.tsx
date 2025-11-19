@@ -228,7 +228,7 @@ const MobileMenu = () => {
 		setSelectedGroupId(groupId);
 
 		if (groupId === -2) {
-			setPreviousGroupId(selectedGroupId); // remember what was selected before opening designer
+			setPreviousGroupId(selectedGroupId);
 			setIsTemplateEditorOpened(true);
 			setIsDrawerOpen(false);
 		} else if (groupId === -3) {
@@ -239,16 +239,11 @@ const MobileMenu = () => {
 
 			const group = sortedGroups.find((g) => g.id === groupId);
 			if (group && group.attributes.length > 0) {
-				// Check if we have a saved tab index for this group
 				const savedTabIndex = groupTabMemory[groupId ?? -1];
 				const tabIndex = savedTabIndex !== undefined ? savedTabIndex : 0;
-
 				setActiveSubGroupIndex(tabIndex);
-
 				const targetAttr = group.attributes[tabIndex] || group.attributes[0];
 				setSelectedAttributeId(targetAttr.id);
-
-				// Auto-select first option only when switching to a new group
 				if (groupId !== selectedGroupId && targetAttr.options.length > 0) {
 					selectOption(targetAttr.options[0].id);
 				}
@@ -259,8 +254,6 @@ const MobileMenu = () => {
 
 	const handleTabChange = (index: number) => {
 		setActiveSubGroupIndex(index);
-
-		// Save the tab index for current group
 		if (selectedGroupId) {
 			setGroupTabMemory(prev => ({
 				...prev,
@@ -297,13 +290,10 @@ const MobileMenu = () => {
 
 	const closeDesigner = () => {
 		setIsTemplateEditorOpened(false);
-
-		// restore the previous selection so we don't lose attributes/options
 		if (previousGroupId !== null) {
 			setSelectedGroupId(previousGroupId);
 			setPreviousGroupId(null);
 		} else {
-			// fallback: clear selection if there was none before
 			setSelectedGroupId(null);
 		}
 
