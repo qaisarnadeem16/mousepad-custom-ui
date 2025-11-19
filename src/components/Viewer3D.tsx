@@ -217,10 +217,10 @@ const Viewer3D = () => {
 			{!isSceneLoading && <ZakekeViewer bgColor='#00000000' />}
 			{!isInfoPointContentVisible && (
 				<div className="">
-					<div className="absolute top-4  flex items-center w-full z-10 justify-center">
+					<div className="absolute lg:top-4 top-0   flex items-center w-full z-10 justify-center">
 						<div
 							className="flex relative items-center gap-5 lg:gap-7 
-    bg-[#070b3a]/90 text-white px-6 py-4 mx-auto lg:w-auto md:w-[95%] w-[94%] justify-center w-full md:py-2 md:rounded-full 
+    bg-[#070b3a]/90 text-white px-6 lg:py-4 py-2 mx-auto lg:w-auto md:w-[95%] w-[94%] justify-center w-full md:py-2 md:rounded-full 
     shadow-[0_0_40px_10px_rgba(102,51,255,0.4)] border border-indigo-700/40
     backdrop-blur-md"
 						>

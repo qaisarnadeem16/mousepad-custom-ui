@@ -100,9 +100,8 @@ const DesignerContainer = styled.div<{ $isMobile?: boolean }>`
 
 	/* Prevent clipping issues on small screens */
 	@media (max-width: 768px) {
-		max-height: 24vh;
-		padding-bottom:10px;
-		// margin-bottom:40px;
+		max-height: 30vh;
+		margin-bottom:40px;
 	}
 `;
 
@@ -111,10 +110,7 @@ const UploadButtons = styled.div`
 	display: flex;
 	flex-direction: column;
 	grid-gap: 5px;
-	margin: 20px 0px;
-	@media (max-width: 768px) {
-		margin: 5px 0px;
-	}
+	margin: 10px 0px;
 `;
 
 const Area = styled.div<{ selected?: boolean }>`
@@ -315,7 +311,7 @@ const SelectSingleValue = (props: JSX.IntrinsicAttributes & SingleValueProps<any
 	);
 };
 
-const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> = ({ onCloseClick, customizeTab, }) => {
+const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> = ({ onCloseClick, customizeTab }) => {
 	const { showDialog, closeDialog } = useDialogManager();
 	const [forceUpdate, setForceUpdate] = useState(false);
 	const { setIsLoading, isMobile, setUnsupportedCharactersFromText, removedUnsupportedCharactersFromTextMap } =
@@ -758,10 +754,10 @@ const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> 
 								<AdvancedSelect
 									styles={{
 										container: (base) =>
-										({
-											...base,
-											minWidth: 300
-										} as CSSObjectWithLabel)
+											({
+												...base,
+												minWidth: 300
+											} as CSSObjectWithLabel)
 									}}
 									isSearchable={false}
 									options={translatedTemplates}
@@ -783,10 +779,10 @@ const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> 
 								<AdvancedSelect
 									styles={{
 										container: (base) =>
-										({
-											...base,
-											minWidth: 300
-										} as CSSObjectWithLabel)
+											({
+												...base,
+												minWidth: 300
+											} as CSSObjectWithLabel)
 									}}
 									isSearchable={false}
 									options={finalVisibleAreas}
@@ -808,14 +804,9 @@ const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> 
 							<div className="w-full">
 								{customizeTab === 'text' && (
 									<>
-										<div className="flex justify-between mb-3 items-center w-full">
-											<h1 className="text-white">Add Text</h1>
-											<button className='text-white lg:hidden block' onClick={onCloseClick}>
-												<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-													<path d="M18 6L6 18" stroke="white" stroke-width="2" stroke-linecap="round" />
-													<path d="M6 6L18 18" stroke="white" stroke-width="2" stroke-linecap="round" />
-												</svg>
-											</button>
+										<div className="flex justify-between items-center w-full">
+											<h1 className="pb-3 text-white">Add Text</h1>
+											<button className='text-white md:hidden block' onClick={() => closeDialog("add-text")}>×</button>
 										</div>
 										{showAddTextButton && (
 											<ReuseBtn className="w-full" onClick={handleAddTextClick}>
@@ -833,14 +824,9 @@ const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> 
 							<div className="w-full">
 								{customizeTab === 'gallery' && showGalleryButton && (
 									<>
-										<div className="flex items-center mb-4 justify-between">
-											<h1 className="text-xl text-white font-semibold">Add Clipart</h1>
-											<button className='text-white lg:hidden block' onClick={onCloseClick}>
-												<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-													<path d="M18 6L6 18" stroke="white" stroke-width="2" stroke-linecap="round" />
-													<path d="M6 6L18 18" stroke="white" stroke-width="2" stroke-linecap="round" />
-												</svg>
-											</button>
+										<div className="flex items-center justify-between">
+											<h1 className="pb-2 lg:pb-3 lg:text-xl text-base text-white lg:font-semibold">Add Clipart</h1>
+										    <button className='text-white md:hidden block text-xl mb-3' onClick={() => closeDialog("add-text")}>×</button>
 										</div>
 										<ClipArtGalleryContainer>
 											<ClipArtHeader>
@@ -876,8 +862,8 @@ const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> 
 															onClick={() => handleAddClipArt(image)}
 															title={image.name}
 														>
-															<img
-																src={image.choiceUrl}
+															<img 
+																src={image.choiceUrl} 
 																alt={image.name}
 																loading="lazy"
 															/>
@@ -896,15 +882,7 @@ const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> 
 							<div className="w-full">
 								{customizeTab === 'upload' && (
 									<>
-										<div className="flex items-center mb-4 justify-between">
-											<h1 className=" text-xl text-white font-semibold">Upload</h1>
-											<button className='text-white lg:hidden block' onClick={onCloseClick}>
-												<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-													<path d="M18 6L6 18" stroke="white" stroke-width="2" stroke-linecap="round" />
-													<path d="M6 6L18 18" stroke="white" stroke-width="2" stroke-linecap="round" />
-												</svg>
-											</button>
-										</div>
+										<h1 className="lg:pb-4 pb-2 lg:text-base text-sm  text-white">Upload Image</h1>
 										{showUploadButton && (
 											<>
 												<button
@@ -942,7 +920,7 @@ const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> 
 													</span>
 													<p className="text-xs mb-2 text-gray-300">(Max size: 2MB)</p>
 													<SupportedFormatsList>
-														<span className="text-white text-[10px]">
+														<span className="text-white lg:block hidden text-[10px]">
 															{T._('Supported file formats:', 'Composer') + ' ' + supportedFileFormats}
 														</span>
 													</SupportedFormatsList>
@@ -1008,7 +986,7 @@ const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> 
 											<span>
 												{T._(
 													'Characters not supported: ' +
-													removedUnsupportedCharactersFromTextMap[item.guid].join(','),
+														removedUnsupportedCharactersFromTextMap[item.guid].join(','),
 													'Composer'
 												)}
 											</span>
