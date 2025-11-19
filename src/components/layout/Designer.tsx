@@ -100,8 +100,9 @@ const DesignerContainer = styled.div<{ $isMobile?: boolean }>`
 
 	/* Prevent clipping issues on small screens */
 	@media (max-width: 768px) {
-		max-height: 30vh;
-		margin-bottom:40px;
+		max-height: 24vh;
+		margin-bottom:0px;
+		padding-bottom: 10px;
 	}
 `;
 
@@ -754,10 +755,10 @@ const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> 
 								<AdvancedSelect
 									styles={{
 										container: (base) =>
-											({
-												...base,
-												minWidth: 300
-											} as CSSObjectWithLabel)
+										({
+											...base,
+											minWidth: 300
+										} as CSSObjectWithLabel)
 									}}
 									isSearchable={false}
 									options={translatedTemplates}
@@ -779,10 +780,10 @@ const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> 
 								<AdvancedSelect
 									styles={{
 										container: (base) =>
-											({
-												...base,
-												minWidth: 300
-											} as CSSObjectWithLabel)
+										({
+											...base,
+											minWidth: 300
+										} as CSSObjectWithLabel)
 									}}
 									isSearchable={false}
 									options={finalVisibleAreas}
@@ -804,9 +805,14 @@ const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> 
 							<div className="w-full">
 								{customizeTab === 'text' && (
 									<>
-										<div className="flex justify-between items-center w-full">
-											<h1 className="pb-3 text-white">Add Text</h1>
-											<button className='text-white md:hidden block' onClick={() => closeDialog("add-text")}>×</button>
+										<div className="flex justify-between mb-3 items-center w-full">
+											<h1 className="text-white">Add Text</h1>
+											<button className='text-white lg:hidden block' onClick={onCloseClick}>
+												<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+													<path d="M18 6L6 18" stroke="white" stroke-width="2" stroke-linecap="round" />
+													<path d="M6 6L18 18" stroke="white" stroke-width="2" stroke-linecap="round" />
+												</svg>
+											</button>
 										</div>
 										{showAddTextButton && (
 											<ReuseBtn className="w-full" onClick={handleAddTextClick}>
@@ -824,10 +830,14 @@ const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> 
 							<div className="w-full">
 								{customizeTab === 'gallery' && showGalleryButton && (
 									<>
-										<div className="flex items-center justify-between">
-											<h1 className="pb-2 lg:pb-3 lg:text-xl text-base text-white lg:font-semibold">Add Clipart</h1>
-										    <button className='text-white md:hidden block text-xl mb-3' onClick={() => closeDialog("add-text")}>×</button>
-										</div>
+										<div className="flex items-center mb-3 justify-between">
+											<h1 className="lg:pb-3 lg:text-xl text-base text-white lg:font-semibold">Add Clipart</h1>
+											<button className='text-white lg:hidden block' onClick={onCloseClick}>
+												<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+													<path d="M18 6L6 18" stroke="white" stroke-width="2" stroke-linecap="round" />
+													<path d="M6 6L18 18" stroke="white" stroke-width="2" stroke-linecap="round" />
+												</svg>
+											</button>										</div>
 										<ClipArtGalleryContainer>
 											<ClipArtHeader>
 												<ClipArtCategorySelect
@@ -862,8 +872,8 @@ const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> 
 															onClick={() => handleAddClipArt(image)}
 															title={image.name}
 														>
-															<img 
-																src={image.choiceUrl} 
+															<img
+																src={image.choiceUrl}
 																alt={image.name}
 																loading="lazy"
 															/>
@@ -882,7 +892,15 @@ const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> 
 							<div className="w-full">
 								{customizeTab === 'upload' && (
 									<>
-										<h1 className="lg:pb-4 pb-2 lg:text-base text-sm  text-white">Upload Image</h1>
+										<div className="flex justify-between mb-3 items-center w-full">
+											<h1 className="text-white">Upload Images</h1>
+											<button className='text-white lg:hidden block' onClick={onCloseClick}>
+												<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+													<path d="M18 6L6 18" stroke="white" stroke-width="2" stroke-linecap="round" />
+													<path d="M6 6L18 18" stroke="white" stroke-width="2" stroke-linecap="round" />
+												</svg>
+											</button>
+										</div>
 										{showUploadButton && (
 											<>
 												<button
@@ -986,7 +1004,7 @@ const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> 
 											<span>
 												{T._(
 													'Characters not supported: ' +
-														removedUnsupportedCharactersFromTextMap[item.guid].join(','),
+													removedUnsupportedCharactersFromTextMap[item.guid].join(','),
 													'Composer'
 												)}
 											</span>
