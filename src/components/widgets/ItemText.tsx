@@ -273,7 +273,7 @@ const ItemText: FC<{
                                       backgroundColor: 'transparent',
                                       boxShadow: 'none',
 									  borderRadius:'8px',
-                                      borderColor: '#FFFFFF4D', // optional
+                                      borderColor: '#b7afaf4d', // optional
                                         '&:hover': {
                                       borderColor: '#6a6a6a'
                                         }

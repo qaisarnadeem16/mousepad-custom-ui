@@ -10,8 +10,8 @@ export const CarouselContainer = styled(Carousel)`
 // Styled component for an icon
 export const Icon = styled.div<{ hoverable?: boolean }>`
 	display: inline-block;
-	width: 28px;
-	height: 28px;
+	width: 24px;
+	height: 24px;
 	cursor: pointer;
 
 	${(props) =>
@@ -34,13 +34,13 @@ export const Icon = styled.div<{ hoverable?: boolean }>`
 // Styled component for a textarea
 export const TextArea = styled.textarea`
 	background-color: transparent;
-	padding: 10px 10px;
+	padding: 6px 10px;
 	color: #6633FF;
 	font-size: 14px;
 	border: 1px #6633FF solid;
 	border-radius: 10px;
 	width: 100%;
-	min-height: 40px;
+	height: 40px;
 	font-family: 'Montserrat', sans-serif;
 	outline: none;
 	resize: none;
@@ -101,7 +101,7 @@ export const Button = styled.button<{
 	text-align: center;
 	border-radius:8px;
 	text-transform: ${(props) => (props.uppercase ? 'uppercase' : 'none')};
-	border: ${(props) => (props.outline ? '1px #FFFFFF4D solid' : '1px #FFFFFF4D solid')};
+	border: ${(props) => (props.outline ? '1px #b7afaf4d solid' : '1px #b7afaf4d solid')};
 	cursor: ${(props) => (!props.disabled ? 'pointer' : 'auto')};
 
 	${(props) =>

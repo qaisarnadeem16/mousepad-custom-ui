@@ -70,6 +70,9 @@ const PriceInfoTextContainer = styled.div`
 	font-weight:600;
 	// font-family:Saira;
 	color:white;
+	@media (max-width: 1024px) {
+		font-size:20px;
+	}
 `;
 
 // Styled component for the content of the out-of-stock tooltip
@@ -92,6 +95,9 @@ const AddToCartButton = styled(Button)`
       }
 	@media (max-width: 1024px) {
 		min-height: 40px;
+		min-width: 125px;
+		font-size:14px;
+
 	}
 `;
 

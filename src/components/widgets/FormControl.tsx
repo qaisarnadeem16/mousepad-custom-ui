@@ -2,8 +2,9 @@ import { FC } from "react";
 import styled from "styled-components";
 
 const FormControlLabel = styled.div`
-    padding:10px 0px;
+    // padding:10px 0px;
     display:flex;
+    // color:#e5e7eb;
     justify-content:space-between;
 `;
 
@@ -22,7 +23,7 @@ export const FormControl: FC<{
 }> = ({ label, rightComponent, children }) => {
     return <FormControlContainer>
         <FormControlLabel>
-            <span className="text-white">{label}</span>
+            <span className="text-[#e5e7eb]">{label}</span>
             {rightComponent}
         </FormControlLabel>
         {children}

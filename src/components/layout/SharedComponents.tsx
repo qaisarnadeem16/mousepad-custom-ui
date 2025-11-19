@@ -548,7 +548,9 @@ export const QuantityContainer = styled.div`
 		// min-width: 100px;
 	} */
     @media (max-width: 1024px) {
-		height: 42px;
+		height: 40px;
+		// padding-left:3px;
+		padding:4px;
 	}
 
 `;

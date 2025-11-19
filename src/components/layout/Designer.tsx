@@ -103,6 +103,8 @@ const DesignerContainer = styled.div<{ $isMobile?: boolean }>`
 		max-height: 24vh;
 		margin-bottom:0px;
 		padding-bottom: 10px;
+		padding: 3px 16px;
+
 	}
 `;
 
@@ -111,7 +113,7 @@ const UploadButtons = styled.div`
 	display: flex;
 	flex-direction: column;
 	grid-gap: 5px;
-	margin: 10px 0px;
+	margin: 0px 0px 10px 0px;
 `;
 
 const Area = styled.div<{ selected?: boolean }>`
@@ -805,7 +807,7 @@ const Designer: FC<{ onCloseClick?: () => void; customizeTab?: string | null }> 
 							<div className="w-full">
 								{customizeTab === 'text' && (
 									<>
-										<div className="flex justify-between mb-3 items-center w-full">
+										<div className="flex justify-between mb-3 mt-2 items-center w-full">
 											<h1 className="text-white">Add Text</h1>
 											<button className='text-white lg:hidden block' onClick={onCloseClick}>
 												<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

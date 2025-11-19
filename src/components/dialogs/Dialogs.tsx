@@ -179,7 +179,7 @@ const DialogFooter = styled.div<{
 	${(props) => props.alignButtons === 'left' && 'justify-content:flex-start'};
 	${(props) => props.alignButtons === 'center' && 'justify-content:center'};
 	${(props) => (props.alignButtons === 'right' || !props.alignButtons) && 'justify-content:flex-end'};
-	padding: 20px 4px 0px 4px;
+	// padding: 20px 4px 0px 4px;
 
 	${DialogFooterButton} + ${DialogFooterButton} {
 		margin-left: ${(props) =>
