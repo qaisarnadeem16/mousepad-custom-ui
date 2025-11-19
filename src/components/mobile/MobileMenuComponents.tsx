@@ -11,12 +11,12 @@ import noImage from '../../assets/images/no_image.png';
 export const MobileItemContainer = styled.div<{ selected?: boolean }>`
 	align-items: center;
 	justify-content: center;
-	min-width: 115px;
-	max-width: 115px;
-	width: 115px;
-	height: 120px;
-	min-height: 120px;
-	max-height: 120px;
+	min-width: 80px;
+	max-width: 80px;
+	width: 80px;
+	height: 95px;
+	min-height: 80px;
+	max-height: 80px;
 	flex: 1;
 	display: flex;
 	flex-direction: column;

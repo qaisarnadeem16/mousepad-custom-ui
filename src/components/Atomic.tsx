@@ -94,7 +94,7 @@ export const Button = styled.button<{
 	justify-content: center;
 	align-items: center;
 	min-width: ${(props) => (props.isFullWidth ? '100%' : '50px')};
-	background-color: ${(props) => (props.primary ? '#6633FF' : 'transparent')};
+	background-color: ${(props) => (props.primary ? '#6633FF' : '#090b38')};
 	color: ${(props) => (props.outline ? 'black' : props.primary ? 'white' : '#313c46')};
 	min-height: 45px;
 	padding: ${(props) => (props.outline ? '' : '5px 10px 5px 10px')};

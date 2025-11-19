@@ -26,7 +26,7 @@ export const MobileMenuContainer = styled.div`
     overflow: hidden;
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
-    padding-bottom: 150px; 
+    padding-bottom: 140px; 
 `;
 
 const BottomGroupBar = styled.div`
@@ -58,8 +58,8 @@ const FooterWrapper = styled.div`
     background-color: #090b38;
 `;
 const GroupBarItem = styled.div<{ selected?: boolean }>`
-    min-width: 75px;
-    height: 70px;
+    min-width: 55px;
+    height: 55px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -96,7 +96,7 @@ const DrawerOverlay = styled.div<{ isOpen: boolean }>`
 
 const DrawerContainer = styled.div<{ isOpen: boolean }>`
     position: fixed;
-    bottom: 155px;
+    bottom: 140px;
     left: 0;
     right: 0;
     background-color: #090b38;
