@@ -206,7 +206,7 @@ const MobileMenu = () => {
 	const {
 		sellerSettings,
 		selectOption,
-		draftCompositions
+		draftCompositions,
 	} = useZakeke();
 
 	const {
@@ -215,7 +215,8 @@ const MobileMenu = () => {
 		selectedAttributeId,
 		setSelectedAttributeId,
 		isUndo,
-		isRedo
+		isRedo ,
+		selectedStepId
 	} = useStore();
 
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -227,7 +228,9 @@ const MobileMenu = () => {
 	const undoRegistering = useUndoRegister();
 	const undoRedoActions = useUndoRedoActions();
 	const actualGroups = useActualGroups() ?? [];
-
+	const selectedStep = selectedGroupId
+		? actualGroups.find((group) => group.id === selectedGroupId)?.steps.find((step) => step.id === selectedStepId)
+		: null;
 	const sortedGroups = [...actualGroups].sort((a, b) => {
 		const aIsSize = a.name?.toLowerCase().includes('size');
 		const bIsSize = b.name?.toLowerCase().includes('size');
@@ -269,7 +272,14 @@ const MobileMenu = () => {
 	const handleTabChange = (index: number) => {
 		setActiveSubGroupIndex(index);
 		if (selectedGroup && selectedGroup.attributes[index]) {
-			setSelectedAttributeId(selectedGroup.attributes[index].id);
+			setSelectedAttributeId(index);
+		}
+		const newSelectedAttribute =
+			selectedStep?.attributes.find((attr) => attr.id === index) ||
+			selectedGroup?.attributes.find((attr) => attr.id === index);
+
+		if (newSelectedAttribute && newSelectedAttribute.options.length > 0) {
+			handleOptionSelection(newSelectedAttribute.options[0]);
 		}
 	};
 
@@ -385,7 +395,7 @@ const MobileMenu = () => {
 							<Tab
 								key={attr.guid}
 								active={activeSubGroupIndex === index}
-								onClick={() => handleTabChange(index)}
+								onClick={() => handleTabChange(attr.id)}
 							>
 								{T._d(attr.name)}
 							</Tab>
