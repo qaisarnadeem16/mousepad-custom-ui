@@ -165,264 +165,277 @@ const OptionsGrid = styled.div`
 `;
 
 const MobileMenu = () => {
-    const { sellerSettings, selectOption, draftCompositions } = useZakeke();
+	const { sellerSettings, selectOption, draftCompositions } = useZakeke();
 
-    const {
-        selectedGroupId,
-        setSelectedGroupId,
-        selectedAttributeId,
-        setSelectedAttributeId,
-        isUndo,
-        isRedo
-    } = useStore();
+	const {
+		selectedGroupId,
+		setSelectedGroupId,
+		selectedAttributeId,
+		setSelectedAttributeId,
+		isUndo,
+		isRedo
+	} = useStore();
 
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [isTemplateEditorOpened, setIsTemplateEditorOpened] = useState(false);
-    const [isDesignsDraftListOpened, setisDesignsDraftListOpened] = useState(false);
-    const [customizeTab, setCustomizeTab] = useState<'upload' | 'text' | 'gallery'>('upload');
-    const [activeSubGroupIndex, setActiveSubGroupIndex] = useState(0);
-    const [groupTabMemory, setGroupTabMemory] = useState<Record<number, number>>({});
-
-    const undoRegistering = useUndoRegister();
-    const undoRedoActions = useUndoRedoActions();
-    const actualGroups = useActualGroups() ?? [];
-
-    // SORT GROUPS
-    const sortedGroups = [...actualGroups].sort((a, b) => {
-        const aIsSize = a.name?.toLowerCase().includes('size');
-        const bIsSize = b.name?.toLowerCase().includes('size');
-        if (aIsSize && !bIsSize) return -1;
-        if (!aIsSize && bIsSize) return 1;
-        return 0;
-    });
-
-    const selectedGroup = selectedGroupId ? sortedGroups.find((g) => g.id === selectedGroupId) : null;
-    const selectedAttribute = selectedGroup?.attributes.find((a) => a.id === selectedAttributeId);
-    const options = selectedAttribute?.options ?? [];
-
-    useEffect(() => {
-        if (sortedGroups.length > 0 && !selectedGroupId) {
-            const firstGroup = sortedGroups[0];
-            setSelectedGroupId(firstGroup.id);
-
-            if (firstGroup.attributes.length > 0) {
-                const firstAttr = firstGroup.attributes[0];
-                setSelectedAttributeId(firstAttr.id);
-
-                if (firstAttr.options.length > 0) {
-                    selectOption(firstAttr.options[0].id);
-                }
-            }
-        }
-    }, [sortedGroups]);
-
-    const handleGroupSelection = (groupId: number | null) => {
-        if (groupId && selectedGroupId !== groupId && !isUndo && !isRedo) {
-            undoRedoActions.eraseRedoStack();
-            undoRedoActions.fillUndoStack({ type: 'group', id: selectedGroupId, direction: 'undo' });
-            undoRedoActions.fillUndoStack({ type: 'group', id: groupId, direction: 'redo' });
-        }
-
-        setSelectedGroupId(groupId);
-
-        if (groupId === -2) {
-            setIsTemplateEditorOpened(true);
-            setIsDrawerOpen(false);
-        } else if (groupId === -3) {
-            setisDesignsDraftListOpened(true);
-            setIsDrawerOpen(false);
-        } else {
-            setIsDrawerOpen(!!groupId);
-
-            const group = sortedGroups.find((g) => g.id === groupId);
-            if (group && group.attributes.length > 0) {
-                // Check if we have a saved tab index for this group
-                const savedTabIndex = groupTabMemory[groupId ?? -1];
-                const tabIndex = savedTabIndex !== undefined ? savedTabIndex : 0;
-                
-                setActiveSubGroupIndex(tabIndex);
-                
-                const targetAttr = group.attributes[tabIndex] || group.attributes[0];
-                setSelectedAttributeId(targetAttr.id);
-
-                // Auto-select first option only when switching to a new group
-                if (groupId !== selectedGroupId && targetAttr.options.length > 0) {
-                    selectOption(targetAttr.options[0].id);
-                }
-            }
-        }
-    };
+	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+	const [isTemplateEditorOpened, setIsTemplateEditorOpened] = useState(false);
+	const [isDesignsDraftListOpened, setisDesignsDraftListOpened] = useState(false);
+	const [customizeTab, setCustomizeTab] = useState<'upload' | 'text' | 'gallery'>('upload');
+	const [activeSubGroupIndex, setActiveSubGroupIndex] = useState(0);
+	const [groupTabMemory, setGroupTabMemory] = useState<Record<number, number>>({});
+	const [previousGroupId, setPreviousGroupId] = useState<number | null>(null);
 
 
-    const handleTabChange = (index: number) => {
-        setActiveSubGroupIndex(index);
-        
-        // Save the tab index for current group
-        if (selectedGroupId) {
-            setGroupTabMemory(prev => ({
-                ...prev,
-                [selectedGroupId]: index
-            }));
-        }
-        
-        if (selectedGroup && selectedGroup.attributes[index]) {
-            const attr = selectedGroup.attributes[index];
-            setSelectedAttributeId(attr.id);
+	const undoRegistering = useUndoRegister();
+	const undoRedoActions = useUndoRedoActions();
+	const actualGroups = useActualGroups() ?? [];
 
-            if (attr.options.length > 0) {
-                selectOption(attr.options[0].id);
-            }
-        }
-    };
+	// SORT GROUPS
+	const sortedGroups = [...actualGroups].sort((a, b) => {
+		const aIsSize = a.name?.toLowerCase().includes('size');
+		const bIsSize = b.name?.toLowerCase().includes('size');
+		if (aIsSize && !bIsSize) return -1;
+		if (!aIsSize && bIsSize) return 1;
+		return 0;
+	});
 
-    const handleOptionSelection = (option: Option) => {
-        const undo = undoRegistering.startRegistering();
-        undoRedoActions.eraseRedoStack();
-        undoRedoActions.fillUndoStack({
-            type: 'option',
-            id: options.find((opt) => opt.selected)?.id ?? null,
-            direction: 'undo'
-        });
-        undoRedoActions.fillUndoStack({ type: 'option', id: option.id, direction: 'redo' });
-        selectOption(option.id);
-        undoRegistering.endRegistering(undo);
-    };
+	const selectedGroup = selectedGroupId ? sortedGroups.find((g) => g.id === selectedGroupId) : null;
+	const selectedAttribute = selectedGroup?.attributes.find((a) => a.id === selectedAttributeId);
+	const options = selectedAttribute?.options ?? [];
 
-    const closeDrawer = () => {
-        setIsDrawerOpen(false);
-    };
+	useEffect(() => {
+		if (sortedGroups.length > 0 && !selectedGroupId) {
+			const firstGroup = sortedGroups[0];
+			setSelectedGroupId(firstGroup.id);
 
-    const closeDesigner = () => {
-        setIsTemplateEditorOpened(false);
-		setSelectedGroupId(null); 
-		setSelectedAttributeId(null);
-    };
+			if (firstGroup.attributes.length > 0) {
+				const firstAttr = firstGroup.attributes[0];
+				setSelectedAttributeId(firstAttr.id);
 
-    return (
-        <MobileMenuContainer>
-            {sellerSettings?.priceInfoText && (
-                <PriceInfoTextContainer
-                    dangerouslySetInnerHTML={{ __html: sellerSettings.priceInfoText }}
-                />
-            )}
+				if (firstAttr.options.length > 0) {
+					selectOption(firstAttr.options[0].id);
+				}
+			}
+		}
+	}, [sortedGroups]);
 
-            {/* Bottom Group Bar */}
-            <BottomGroupBar>
-                {actualGroups &&
-                    !(actualGroups.length === 1 && actualGroups[0].name.toLowerCase() === 'other') &&
-                    sortedGroups.map((group) => {
-                        if (!group) return null;
+	const handleGroupSelection = (groupId: number | null) => {
+		if (groupId && selectedGroupId !== groupId && !isUndo && !isRedo) {
+			undoRedoActions.eraseRedoStack();
+			undoRedoActions.fillUndoStack({ type: 'group', id: selectedGroupId, direction: 'undo' });
+			undoRedoActions.fillUndoStack({ type: 'group', id: groupId, direction: 'redo' });
+		}
 
-                        if (group.id === -2) {
-                            const staticGroups = [
-                                { id: 'upload', name: 'Upload', icon: uploadIcon },
-                                { id: 'text', name: 'Text', icon: textIcon },
-                                { id: 'gallery', name: 'Gallery', icon: galleryIcon }
-                            ];
+		setSelectedGroupId(groupId);
 
-                            return staticGroups.map((staticGroup) => (
-                                <GroupBarItem
-                                    key={staticGroup.id}
-                                    selected={selectedGroupId === -2 && customizeTab === staticGroup.id}
-                                    onClick={() => {
-                                        handleGroupSelection(-2);
-                                        setCustomizeTab(staticGroup.id as 'upload' | 'text' | 'gallery');
-                                        setIsTemplateEditorOpened(true);
-                                    }}
-                                >
-                                    <img src={staticGroup.icon} alt={staticGroup.name} />
-                                </GroupBarItem>
-                            ));
-                        }
+		if (groupId === -2) {
+			setPreviousGroupId(selectedGroupId); // remember what was selected before opening designer
+			setIsTemplateEditorOpened(true);
+			setIsDrawerOpen(false);
+		} else if (groupId === -3) {
+			setisDesignsDraftListOpened(true);
+			setIsDrawerOpen(false);
+		} else {
+			setIsDrawerOpen(!!groupId);
 
-                        return (
-                            <GroupBarItem
-                                key={group.guid}
-                                selected={group.id === selectedGroupId}
-                                onClick={() => handleGroupSelection(group.id)}
-                            >
-                                <img
-                                    src={
-                                        group.imageUrl && group.imageUrl !== ''
-                                            ? group.id === -3
-                                                ? savedCompositionsIcon
-                                                : group.imageUrl
-                                            : star
-                                    }
-                                    alt={group.name ? T._d(group.name) : 'Customize'}
-                                />
-                            </GroupBarItem>
-                        );
-                    })}
-            </BottomGroupBar>
+			const group = sortedGroups.find((g) => g.id === groupId);
+			if (group && group.attributes.length > 0) {
+				// Check if we have a saved tab index for this group
+				const savedTabIndex = groupTabMemory[groupId ?? -1];
+				const tabIndex = savedTabIndex !== undefined ? savedTabIndex : 0;
 
-            {/* Footer */}
-            <FooterWrapper>
-                <FooterDesktop />
-            </FooterWrapper>
+				setActiveSubGroupIndex(tabIndex);
 
-            <DrawerOverlay isOpen={isDrawerOpen} onClick={closeDrawer} />
+				const targetAttr = group.attributes[tabIndex] || group.attributes[0];
+				setSelectedAttributeId(targetAttr.id);
 
-            <DrawerContainer isOpen={isDrawerOpen}>
-                <DrawerHeader>
-                    <h3>{selectedGroup ? T._d(selectedGroup.name) : ''}</h3>
-                    <button onClick={closeDrawer}> 
-						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M18 6L6 18" stroke="white" stroke-width="2" stroke-linecap="round" /> <path d="M6 6L18 18" stroke="white" stroke-width="2" stroke-linecap="round" /> </svg> 
+				// Auto-select first option only when switching to a new group
+				if (groupId !== selectedGroupId && targetAttr.options.length > 0) {
+					selectOption(targetAttr.options[0].id);
+				}
+			}
+		}
+	};
+
+
+	const handleTabChange = (index: number) => {
+		setActiveSubGroupIndex(index);
+
+		// Save the tab index for current group
+		if (selectedGroupId) {
+			setGroupTabMemory(prev => ({
+				...prev,
+				[selectedGroupId]: index
+			}));
+		}
+
+		if (selectedGroup && selectedGroup.attributes[index]) {
+			const attr = selectedGroup.attributes[index];
+			setSelectedAttributeId(attr.id);
+
+			if (attr.options.length > 0) {
+				selectOption(attr.options[0].id);
+			}
+		}
+	};
+
+	const handleOptionSelection = (option: Option) => {
+		const undo = undoRegistering.startRegistering();
+		undoRedoActions.eraseRedoStack();
+		undoRedoActions.fillUndoStack({
+			type: 'option',
+			id: options.find((opt) => opt.selected)?.id ?? null,
+			direction: 'undo'
+		});
+		undoRedoActions.fillUndoStack({ type: 'option', id: option.id, direction: 'redo' });
+		selectOption(option.id);
+		undoRegistering.endRegistering(undo);
+	};
+
+	const closeDrawer = () => {
+		setIsDrawerOpen(false);
+	};
+
+	const closeDesigner = () => {
+		setIsTemplateEditorOpened(false);
+
+		// restore the previous selection so we don't lose attributes/options
+		if (previousGroupId !== null) {
+			setSelectedGroupId(previousGroupId);
+			setPreviousGroupId(null);
+		} else {
+			// fallback: clear selection if there was none before
+			setSelectedGroupId(null);
+		}
+
+		setIsDrawerOpen(false);
+	};
+
+
+	return (
+		<MobileMenuContainer>
+			{sellerSettings?.priceInfoText && (
+				<PriceInfoTextContainer
+					dangerouslySetInnerHTML={{ __html: sellerSettings.priceInfoText }}
+				/>
+			)}
+
+			{/* Bottom Group Bar */}
+			<BottomGroupBar>
+				{actualGroups &&
+					!(actualGroups.length === 1 && actualGroups[0].name.toLowerCase() === 'other') &&
+					sortedGroups.map((group) => {
+						if (!group) return null;
+
+						if (group.id === -2) {
+							const staticGroups = [
+								{ id: 'upload', name: 'Upload', icon: uploadIcon },
+								{ id: 'text', name: 'Text', icon: textIcon },
+								{ id: 'gallery', name: 'Gallery', icon: galleryIcon }
+							];
+
+							return staticGroups.map((staticGroup) => (
+								<GroupBarItem
+									key={staticGroup.id}
+									selected={selectedGroupId === -2 && customizeTab === staticGroup.id}
+									onClick={() => {
+										handleGroupSelection(-2);
+										setCustomizeTab(staticGroup.id as 'upload' | 'text' | 'gallery');
+										setIsTemplateEditorOpened(true);
+									}}
+								>
+									<img src={staticGroup.icon} alt={staticGroup.name} />
+								</GroupBarItem>
+							));
+						}
+
+						return (
+							<GroupBarItem
+								key={group.guid}
+								selected={group.id === selectedGroupId}
+								onClick={() => handleGroupSelection(group.id)}
+							>
+								<img
+									src={
+										group.imageUrl && group.imageUrl !== ''
+											? group.id === -3
+												? savedCompositionsIcon
+												: group.imageUrl
+											: star
+									}
+									alt={group.name ? T._d(group.name) : 'Customize'}
+								/>
+							</GroupBarItem>
+						);
+					})}
+			</BottomGroupBar>
+
+			{/* Footer */}
+			<FooterWrapper>
+				<FooterDesktop />
+			</FooterWrapper>
+
+			<DrawerOverlay isOpen={isDrawerOpen} onClick={closeDrawer} />
+
+			<DrawerContainer isOpen={isDrawerOpen}>
+				<DrawerHeader>
+					<h3>{selectedGroup ? T._d(selectedGroup.name) : ''}</h3>
+					<button onClick={closeDrawer}>
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M18 6L6 18" stroke="white" stroke-width="2" stroke-linecap="round" /> <path d="M6 6L18 18" stroke="white" stroke-width="2" stroke-linecap="round" /> </svg>
 					</button>
-                </DrawerHeader>
+				</DrawerHeader>
 
-                {selectedGroup && selectedGroup.attributes.length > 1 && (
-                    <TabsContainer>
-                        {selectedGroup.attributes.map((attr, index) => (
-                            <Tab
-                                key={attr.guid}
-                                active={activeSubGroupIndex === index}
-                                onClick={() => handleTabChange(index)}
-                            >
-                                {T._d(attr.name)}
-                            </Tab>
-                        ))}
-                    </TabsContainer>
-                )}
+				{selectedGroup && selectedGroup.attributes.length > 1 && (
+					<TabsContainer>
+						{selectedGroup.attributes.map((attr, index) => (
+							<Tab
+								key={attr.guid}
+								active={activeSubGroupIndex === index}
+								onClick={() => handleTabChange(index)}
+							>
+								{T._d(attr.name)}
+							</Tab>
+						))}
+					</TabsContainer>
+				)}
 
-                <DrawerContent>
-                    {selectedAttributeId && (
-                        <OptionsGrid>
-                            {options.map(
-                                (option) =>
-                                    option.enabled && (
-                                        <MenuItem
-                                            key={option.guid}
-                                            isRound={selectedAttribute?.optionShapeType === 2}
-                                            description={T._d(option.description)}
-                                            selected={option.selected}
-                                            imageUrl={option.imageUrl ?? ''}
-                                            label={T._d(option.name)}
-                                            onClick={() => handleOptionSelection(option)}
-                                        />
-                                    )
-                            )}
-                        </OptionsGrid>
-                    )}
-                </DrawerContent>
-            </DrawerContainer>
+				<DrawerContent>
+					{selectedAttributeId && (
+						<OptionsGrid>
+							{options.map(
+								(option) =>
+									option.enabled && (
+										<MenuItem
+											key={option.guid}
+											isRound={selectedAttribute?.optionShapeType === 2}
+											description={T._d(option.description)}
+											selected={option.selected}
+											imageUrl={option.imageUrl ?? ''}
+											label={T._d(option.name)}
+											onClick={() => handleOptionSelection(option)}
+										/>
+									)
+							)}
+						</OptionsGrid>
+					)}
+				</DrawerContent>
+			</DrawerContainer>
 
-            {selectedGroupId === -2 && (
-                <Designer customizeTab={customizeTab} onCloseClick={closeDesigner} />
-            )}
+			{selectedGroupId === -2 && (
+				<Designer customizeTab={customizeTab} onCloseClick={closeDesigner} />
+			)}
 
-            {draftCompositions &&
-                selectedGroup?.id === -3 &&
-                isDesignsDraftListOpened && (
-                    <DesignsDraftList
-                        onCloseClick={() => {
-                            setisDesignsDraftListOpened(false);
-                            handleGroupSelection(null);
-                        }}
-                    />
-                )}
-        </MobileMenuContainer>
-    );
+			{draftCompositions &&
+				selectedGroup?.id === -3 &&
+				isDesignsDraftListOpened && (
+					<DesignsDraftList
+						onCloseClick={() => {
+							setisDesignsDraftListOpened(false);
+							handleGroupSelection(null);
+						}}
+					/>
+				)}
+		</MobileMenuContainer>
+	);
 };
 
 export default MobileMenu;
