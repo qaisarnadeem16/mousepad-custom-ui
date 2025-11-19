@@ -164,7 +164,6 @@ const OptionsGrid = styled.div`
     width: 100%;
 `;
 
-// ------------------ COMPONENT ------------------
 const MobileMenu = () => {
     const { sellerSettings, selectOption, draftCompositions } = useZakeke();
 
@@ -182,6 +181,7 @@ const MobileMenu = () => {
     const [isDesignsDraftListOpened, setisDesignsDraftListOpened] = useState(false);
     const [customizeTab, setCustomizeTab] = useState<'upload' | 'text' | 'gallery'>('upload');
     const [activeSubGroupIndex, setActiveSubGroupIndex] = useState(0);
+    const [groupTabMemory, setGroupTabMemory] = useState<Record<number, number>>({});
 
     const undoRegistering = useUndoRegister();
     const undoRedoActions = useUndoRedoActions();
@@ -200,9 +200,6 @@ const MobileMenu = () => {
     const selectedAttribute = selectedGroup?.attributes.find((a) => a.id === selectedAttributeId);
     const options = selectedAttribute?.options ?? [];
 
-    // ------------------------------------------------------------------
-    // ✅ FIX 1: AUTO SELECT FIRST GROUP + FIRST ATTRIBUTE + FIRST OPTION
-    // ------------------------------------------------------------------
     useEffect(() => {
         if (sortedGroups.length > 0 && !selectedGroupId) {
             const firstGroup = sortedGroups[0];
@@ -219,10 +216,6 @@ const MobileMenu = () => {
         }
     }, [sortedGroups]);
 
-
-    // ------------------------------------------------------------------
-    // GROUP SELECTION + AUTO-SELECT FIRST ATTRIBUTE + OPTION
-    // ------------------------------------------------------------------
     const handleGroupSelection = (groupId: number | null) => {
         if (groupId && selectedGroupId !== groupId && !isUndo && !isRedo) {
             undoRedoActions.eraseRedoStack();
@@ -231,7 +224,6 @@ const MobileMenu = () => {
         }
 
         setSelectedGroupId(groupId);
-        setActiveSubGroupIndex(0);
 
         if (groupId === -2) {
             setIsTemplateEditorOpened(true);
@@ -244,11 +236,18 @@ const MobileMenu = () => {
 
             const group = sortedGroups.find((g) => g.id === groupId);
             if (group && group.attributes.length > 0) {
-                const firstAttr = group.attributes[0];
-                setSelectedAttributeId(firstAttr.id);
+                // Check if we have a saved tab index for this group
+                const savedTabIndex = groupTabMemory[groupId ?? -1];
+                const tabIndex = savedTabIndex !== undefined ? savedTabIndex : 0;
+                
+                setActiveSubGroupIndex(tabIndex);
+                
+                const targetAttr = group.attributes[tabIndex] || group.attributes[0];
+                setSelectedAttributeId(targetAttr.id);
 
-                if (firstAttr.options.length > 0) {
-                    selectOption(firstAttr.options[0].id);
+                // Auto-select first option only when switching to a new group
+                if (groupId !== selectedGroupId && targetAttr.options.length > 0) {
+                    selectOption(targetAttr.options[0].id);
                 }
             }
         }
@@ -257,6 +256,15 @@ const MobileMenu = () => {
 
     const handleTabChange = (index: number) => {
         setActiveSubGroupIndex(index);
+        
+        // Save the tab index for current group
+        if (selectedGroupId) {
+            setGroupTabMemory(prev => ({
+                ...prev,
+                [selectedGroupId]: index
+            }));
+        }
+        
         if (selectedGroup && selectedGroup.attributes[index]) {
             const attr = selectedGroup.attributes[index];
             setSelectedAttributeId(attr.id);
@@ -282,17 +290,14 @@ const MobileMenu = () => {
 
     const closeDrawer = () => {
         setIsDrawerOpen(false);
-        setSelectedGroupId(null);
-        setSelectedAttributeId(null);
     };
 
     const closeDesigner = () => {
         setIsTemplateEditorOpened(false);
-        setSelectedGroupId(null);
-        setSelectedAttributeId(null);
+		setSelectedGroupId(null); 
+		setSelectedAttributeId(null);
     };
 
-    // ------------------ RENDER ------------------
     return (
         <MobileMenuContainer>
             {sellerSettings?.priceInfoText && (
