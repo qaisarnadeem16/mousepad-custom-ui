@@ -1,5 +1,6 @@
 // import FooterDesktop from 'components/desktop/FooterDesktop';
 // import FooterMobile from 'components/mobile/FooterMobile';
+import { useZakeke } from '@zakeke/zakeke-configurator-react';
 import MobileMenu from 'components/mobile/MobileMenu';
 import Viewer3D from 'components/Viewer3D';
 import styled from 'styled-components';
@@ -48,10 +49,14 @@ export const Top = styled.div`
 
 // LayoutMobile component for the mobile layout
 function LayoutMobile() {
+  const {isSceneLoading}=useZakeke()
   return (
     <MobileContainer>
       <Viewer3D /> {/* Renders the 3D viewer */}
-      <MobileMenu /> {/* Renders the mobile menu */}
+     {!isSceneLoading &&(
+      <MobileMenu/>
+     )}
+      {/* Renders the mobile menu */}
       {/* <FooterMobile />  */}
     </MobileContainer>
   );
