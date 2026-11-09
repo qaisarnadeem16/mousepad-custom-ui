@@ -2,7 +2,7 @@ import { useZakeke } from '@zakeke/zakeke-configurator-react';
 import { T } from 'Helpers';
 import { Button } from 'components/Atomic';
 import { FormControl } from 'components/widgets/FormControl';
-import { FC, useEffect, useRef, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Dialog, MessageDialog, useDialogManager } from './Dialogs';
 
@@ -119,8 +119,8 @@ const AiDialog: FC<{}> = () => {
 					<Input
 						ref={inputRef}
 						value={text}
-						onChange={(e) => setText(e.currentTarget.value)}
-						onKeyDown={(e) => {
+						onChange={(e: React.ChangeEvent<HTMLInputElement>) => setText(e.currentTarget.value)}
+						onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
 							// If enter key
 							if (e.key === 'Enter') {
 								executeAi(text);
